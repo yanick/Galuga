@@ -1,0 +1,39 @@
+<%args>
+$entry
+$body
+</%args>
+
+<div class="blog_entry">
+<h2><% $entry->title %></h2>
+<% $body %>
+
+<& .tags, entry => $entry &>
+</div>
+
+<%def .tags>
+<%args>
+$entry
+</%args>
+<div class="tags">
+<b>tags: </b>
+% $m->print( join ', ', sort $entry->tags->get_column( 'tag' )->all );
+</div>
+</%def>
+
+<%method css_header>
+<& PARENT:css_header &>
+div.blog_entry {
+    width: 800px;
+    margin-left: 200px;
+}
+
+div.blog_entry h2 {
+    border-bottom: solid lightgrey 1px;
+}
+
+div.blog_entry .tags {
+    border-top: solid 1px lightgrey;
+    margin-top: 10px;
+    padding-top: 3px;
+}
+</%method>
