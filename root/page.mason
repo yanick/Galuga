@@ -1,0 +1,53 @@
+<%args>
+@tags
+</%args>
+<html>
+<head>
+
+<link rel="stylesheet" type="text/css" href="<% $c->uri_for( '/static/galuga.css' ) %>" />
+<style>
+<& SELF:css_header &>
+</style>
+</head>
+<body>
+<div class="header">
+<div class="header-inner">
+<h1><a href="<% $c->uri_for( '/' ) %>"><% $c->config->{blog_name} %></a></h1>
+<div><% $c->config->{tagline} %></div>
+</div>
+</div>
+
+
+<div class="left_column">
+<& .tagsdiv, tags => \@tags &>
+
+<& /widgets/recent_entries.mason &>
+
+</div>
+
+<div class="middle_column">
+<% $m->content %>
+</div>
+
+</body>
+</hmtl>
+
+<%method css_header>
+
+
+</%method>
+
+<%def .tagsdiv>
+<%args>
+@tags
+</%args>
+<div class="tags_listing">
+<h3>Tags</h3>
+% for my $t ( sort { lc($a->tag) cmp lc($b->tag) } @tags ) {
+<div>
+<a href="<% $c->uri_for( '/tag' ) %>/<% $t->tag | u %>"><% $t->tag %> </a>
+
+<div class="count">(<% $t->get_column('nbr_entries') %>)</div></div>
+% }
+</div>
+</%def>

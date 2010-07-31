@@ -1,0 +1,18 @@
+<%args>
+@entries
+@tags
+@selected_tags
+</%args>
+
+<h2>Entries with tag<% 's' x ( @selected_tags > 1 ) %>
+% $m->print( join ', ', map { "<i>$_</i>" } @selected_tags );
+</h2>
+
+% for ( @entries ) {
+<div><a href="<% $c->uri_for( '/entry', $_->url ) %>"><% $_->title %></a>,
+<% $_->created %>
+% if ( $_->created != $_->last_updated ) {
+, last updated <% $_->last_updated %>
+% } 
+</div>
+% }

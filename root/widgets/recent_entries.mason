@@ -1,0 +1,22 @@
+<%args>
+$nbr_entries => 5
+</%args>
+<%perl>
+my @entries = $c->model('DB::Entries')->search({},
+    {
+        limit => $nbr_entries,
+        order_by => { '-desc' => 'created' },
+    }
+);
+</%perl>
+<div class="widget">
+<h3>Recent entries</h3>
+<ul>
+% for ( @entries ) {
+<li>
+<a href="<% $c->uri_for( '/entry', $_->url ) %>"><% $_->title %></a>
+<% $_->created %>
+</li>
+% }
+</ul>
+</div>

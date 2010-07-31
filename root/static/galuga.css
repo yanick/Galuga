@@ -1,0 +1,76 @@
+div.header  {
+    width: 100%;
+    background: url("<% $c->uri_for( '/static/tyger_header.png' ) %>") no-repeat scroll right bottom #910000;
+    height: 122px;
+    color: white;
+    padding: 1px;
+}
+
+div.header-inner {
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+div.header h1 {
+    font-family: trebuchet ms;
+    font-size: 34px;
+    font-weight:  bold;
+    margin-bottom: 10px;
+}
+
+body {
+    font-family: trebuchet ms;
+    font: 13px arial,helvetica,sans-serif;
+    margin: 0px;
+}
+
+h1 a, h2 a, h3 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover {
+    text-decoration: underline;
+}
+
+a {
+    color: #AB0404;
+    outline: medium none;
+}
+
+div.blog_entry {
+}
+
+div.blog_entry h2 {
+    border-bottom: solid lightgrey 1px;
+}
+
+div.blog_entry .tags {
+    border-top: solid 1px lightgrey;
+    margin-top: 10px;
+    padding-top: 3px;
+}
+
+div.left_column {
+    display: inline-block;
+    width: 200px;
+    vertical-align: top;
+    margin-left: 20px;
+}
+
+div.middle_column {
+    display: inline-block;
+    width: 800px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+div.tags_listing .count {
+    float: right;
+    width: 3em;
+    font-style: italic;
+}
+
+div.widget ul {
+    padding-left: 20px;
+}
