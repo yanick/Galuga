@@ -2,6 +2,9 @@ package Galuga::Controller::Root;
 use Moose;
 use namespace::autoclean;
 
+use XML::Feed;
+use XML::Atom::SimpleFeed;
+
 BEGIN { extends 'Catalyst::Controller' }
 
 #
@@ -26,11 +29,65 @@ The root page (/)
 
 =cut
 
+sub entries :Path( 'entries' ) :Args(0) {
+    my ( $self, $c ) = @_;
+
+
+    my $tags = $c->model('DB::Tags')->search({}, {
+             group_by => 'tag',
+              select => [
+                    'tag',
+                  { count => 'entry_path' }
+              ],
+              as => [ qw/ tag nbr_entries / ],
+         } );
+
+    $c->stash->{tags} = [ $tags->all ];
+    # the whole she-bang
+
+    $c->stash->{entries} = [ $c->model('DB::Entries')->search({},{order_by=>{
+                '-desc' => 'created' } } )->all ];
+}
+
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
-    # Hello World
-    $c->response->body( $c->welcome_message );
+    my $entry = $c->model('DB::Entries')->search({},
+        { order_by => { '-desc' => 'created' }, limit => 1 }
+    );
+
+    $c->go( '/entry/index', [ $entry->next->url ] );
+}
+
+sub feed :Path('atom.xml') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    # get the last 10 entries and wrap'em
+    my @entries = $c->model('DB::Entries')->search({},
+        { order_by => { '-desc' => 'created' }, limit => 10 }
+    );
+
+    my $feed = XML::Atom::SimpleFeed->new( 
+        title => $c->config->{blog_url},
+        link => $c->config->{blog_url},
+        updated => $entries[0]->created->iso8601,
+        author => $c->config->{blog_author},
+    );
+
+    for ( @entries ) {
+        $feed->add_entry(
+            title => $_->title,
+            link => $c->uri_for( '/entry', $_->url ),
+            content => {
+                type => 'xhtml',
+                content => $_->body,
+            },
+            updated => $_->created->iso8601,
+        );
+    }
+
+    $c->res->content_type( 'application/atom+xml' );
+    $c->res->body( $feed->as_string );
 }
 
 =head2 default

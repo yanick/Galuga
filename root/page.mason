@@ -1,13 +1,27 @@
 <%args>
 @tags
+@syntax_highlight => ()
 </%args>
+% my $content = $m->content;
 <html>
 <head>
+    <title><% $c->config->{blog_name} %></title>
+    <link rel="shortcut icon" href="<% $c->uri_for( '/static/favicon.png' ) %>" />
 
-<link rel="stylesheet" type="text/css" href="<% $c->uri_for( '/static/galuga.css' ) %>" />
+    <link rel="alternate" 
+          type="application/atom+xml" 
+          title="Recent Entries" 
+          href="<% $c->uri_for( '/atom.xml' ) %>" />
+
+
+
+<link rel="stylesheet" type="text/css" href="<% $c->uri_for( '/css/galuga.css' ) %>" />
 <style>
 <& SELF:css_header &>
 </style>
+
+<& /syntax_highlight.mason, brushes => \@syntax_highlight &>
+
 </head>
 <body>
 <div class="header">
@@ -16,38 +30,24 @@
 <div><% $c->config->{tagline} %></div>
 </div>
 </div>
-
+<div class="main_body">
 
 <div class="left_column">
-<& .tagsdiv, tags => \@tags &>
+<& /widgets/tags.mason, tags => \@tags &>
 
 <& /widgets/recent_entries.mason &>
 
 </div>
 
 <div class="middle_column">
-<% $m->content %>
+<% $content %>
+</div>
+
+<& right_column.mason &>
+
 </div>
 
 </body>
 </hmtl>
-
 <%method css_header>
-
-
 </%method>
-
-<%def .tagsdiv>
-<%args>
-@tags
-</%args>
-<div class="tags_listing">
-<h3>Tags</h3>
-% for my $t ( sort { lc($a->tag) cmp lc($b->tag) } @tags ) {
-<div>
-<a href="<% $c->uri_for( '/tag' ) %>/<% $t->tag | u %>"><% $t->tag %> </a>
-
-<div class="count">(<% $t->get_column('nbr_entries') %>)</div></div>
-% }
-</div>
-</%def>

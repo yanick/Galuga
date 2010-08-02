@@ -1,14 +1,45 @@
 <%args>
 $entry
+@tags
 $body
+@syntax_highlight => ()
 </%args>
 
+<&| /page.mason, %ARGS &>
+
 <div class="blog_entry">
-<h2><% $entry->title %></h2>
+<h2><a href="<% $c->uri_for( '/entry', $entry->url ) %>"><% $entry->title %></a></h2>
+
+<div class="entry_info">
+% if ( my $original = $entry->original ) {
+% $original =~ /^(.*) - (.*)/;
+originally published at <a href="<% $2 %>"><% $1 %></a>
+%}
+<div style="float: right">
+created: <% $entry->created->strftime("%a, %b %e %Y") %>\
+% if ( $entry->created != $entry->last_updated ) {
+, last updated: <% $entry->last_updated->strftime("%a, %b %e %Y") %>
+% }
+</div>
+</div>
+
+
 <% $body %>
 
+% if ( @syntax_highlight ) {
+<script type="text/javascript">
+   SyntaxHighlighter.all();
+</script>
+% }
+
 <& .tags, entry => $entry &>
+
+<& disqus.mason, identifier => $entry->url &>
+
 </div>
+
+</&>
+
 
 <%def .tags>
 <%args>
@@ -16,24 +47,9 @@ $entry
 </%args>
 <div class="tags">
 <b>tags: </b>
-% $m->print( join ', ', sort $entry->tags->get_column( 'tag' )->all );
+% $m->print( join ', ', 
+% map { "<a href='" . $c->uri_for( "/tag/$_" ) . "'>$_</a>" } 
+% sort $entry->tags->get_column( 'tag' )->all );
 </div>
 </%def>
 
-<%method css_header>
-<& PARENT:css_header &>
-div.blog_entry {
-    width: 800px;
-    margin-left: 200px;
-}
-
-div.blog_entry h2 {
-    border-bottom: solid lightgrey 1px;
-}
-
-div.blog_entry .tags {
-    border-top: solid 1px lightgrey;
-    margin-top: 10px;
-    padding-top: 3px;
-}
-</%method>

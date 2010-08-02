@@ -2,8 +2,12 @@ use strict;
 use warnings;
 use Test::More;
 
-BEGIN { use_ok 'Catalyst::Test', 'Galuga' }
-BEGIN { use_ok 'Galuga::Controller::Entry' }
 
-ok( request('/entry')->is_success, 'Request should succeed' );
+         # We're in a t/*.t test script...
+         use Test::WWW::Mechanize::Catalyst 'Galuga';
+                                     my $mech =
+                                     Test::WWW::Mechanize::Catalyst->new;
+
+$mech->get_ok('/entry/shuck-and-awe-5');
+
 done_testing();

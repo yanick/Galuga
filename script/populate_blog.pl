@@ -15,6 +15,7 @@ use autodie;
 use Digest::MD5 qw/ md5_hex /;
 use File::Slurp qw/ slurp /;
 use YAML;
+use DateTime::Format::DateParse;
 
 use Getopt::Long;
 
@@ -26,6 +27,8 @@ GetOptions(
 
 my %conf = Config::General->new( "$Bin/../galuga.conf" )->getall;
 
+$conf{blog_root} =~ s#__HOME__#$Bin/..#;
+
 my $schema = Galuga::Schema->connect( $conf{db} );
 
 if ( not $schema->get_db_version ) {
@@ -35,18 +38,43 @@ elsif ( $schema->get_db_version cmp $Galuga::Schema::VERSION ) {
     $schema->upgrade;
 }
 
-local $CWD = $conf{blog_root};
-    print $schema->resultset('Entries')->all;
+# first, the entries in the database
+my $entries_rs = $schema->resultset('Entries')->search;
 
-my @entries = find_entries( '.' );
+my %seen_entry;
+while ( my $entry = $entries_rs->next ) {
+    print "from DB, ", $entry->url, "\n";
+
+    $seen_entry{ join '/', $conf{blog_root}, $entry->path }++;
+
+    my $md5 = md5_hex( slurp join '/', $conf{blog_root}, $entry->path, $entry->filename );
+
+    print "not modified\n" and next if $md5 eq $entry->md5;
+
+    print "modified, reloading...\n";
+
+    $entry->delete;
+
+    import_entry( $schema, $conf{blog_root}, $entry->path, $entry->filename );
+}
+
+my @entries = find_entries( $conf{blog_root} );
 
 for ( @entries ) {
 
-    import_entry( $schema, @$_ );
+    next if delete $seen_entry{ $_->[0] };
+
+    print "new entry $_->[0]/$_->[1] discovered\n";
+
+    $_->[0] =~ s#^\Q$conf{blog_root}/##;
+
+    import_entry( $schema, $conf{blog_root}, @$_ );
 }
 
 sub import_entry {
-    my ( $schema, $path, $filename ) = @_;
+    my ( $schema, $blog_root, $path, $filename ) = @_;
+
+    print "importing $path/$filename\n";
 
     my $entry = $schema->resultset('Entries')->new_result({
             path => $path,
@@ -54,7 +82,7 @@ sub import_entry {
         });
 
 
-    my $file = slurp join '/', $path, $filename;
+    my $file = slurp join '/', $blog_root, $path, $filename;
 
     my ( $header, $body ) = $file =~ /(.*?)^---$(.*)/sm;
 
@@ -64,11 +92,26 @@ sub import_entry {
 
     $entry->url( $header->{url} ||= title_to_url( $header->{title} ) );
 
-    $entry->format( lc( $header->{format} || $filename =~ /^entry\.(.*)$/ ) || 'html' );
+
+    $entry->created( DateTime::Format::DateParse->parse_datetime(
+            $header->{created} ) );
+
+    $entry->last_updated( DateTime::Format::DateParse->parse_datetime(
+            $header->{last_updated} || $header->{created} ) );
 
     $entry->md5(md5_hex($file));
 
-    $entry->body( $body );
+    $entry->original( $header->{original} );
+
+    my $format = lc( $header->{format} || $filename =~ /^entry\.(.*)$/ ) || 'html';
+
+    my $module = 'Galuga::Format::' . $format;
+    eval "use $module";
+
+    $entry->body( '<div>'.$module->render( $body ).'</div>' );
+
+    use XML::LibXML;
+    my $dom = XML::LibXML->load_xml( string => $entry->body );
 
     $entry->insert;
 
@@ -80,7 +123,7 @@ sub import_entry {
 
 sub title_to_url {
     my $title = shift;
-    $title =~ y/ /_/;
+    $title =~ y/ /-/;
     return lc $title;
 }
 

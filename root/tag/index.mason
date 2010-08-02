@@ -4,15 +4,19 @@
 @selected_tags
 </%args>
 
+<&| /page.mason, %ARGS &>
+
 <h2>Entries with tag<% 's' x ( @selected_tags > 1 ) %>
 % $m->print( join ', ', map { "<i>$_</i>" } @selected_tags );
 </h2>
 
 % for ( @entries ) {
 <div><a href="<% $c->uri_for( '/entry', $_->url ) %>"><% $_->title %></a>,
-<% $_->created %>
+<% $_->created->strftime("%a, %b %e %Y") %>
 % if ( $_->created != $_->last_updated ) {
-, last updated <% $_->last_updated %>
+, last updated <% $_->last_updated->strftime("%a, %b %e %Y") %>
 % } 
 </div>
 % }
+
+</&>

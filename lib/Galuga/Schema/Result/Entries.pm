@@ -5,6 +5,8 @@ use warnings;
 
 use base qw/DBIx::Class::Core/;
 
+__PACKAGE__->load_components(qw/ Core InflateColumn::DateTime/);
+
 __PACKAGE__->table( 'Entries' );
 
 __PACKAGE__->add_columns(
@@ -33,11 +35,6 @@ __PACKAGE__->add_columns(
         size => 50,
         is_nullable => 0,
    },
-    format => {
-        data_type => 'VARCHAR',
-        size => 20,
-        is_nullable => 0,
-   },
     body => {
         data_type => 'TEXT',
         is_nullable => 0,
@@ -48,6 +45,11 @@ __PACKAGE__->add_columns(
     },
     last_updated => {
         data_type => 'DATETIME',
+        is_nullable => 1,
+    },
+    original => {
+        data_type => 'VARCHAR',
+        size => 100,
         is_nullable => 1,
     },
 );

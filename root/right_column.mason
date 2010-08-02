@@ -1,0 +1,7 @@
+<div class="right_column">
+
+<& /widgets/cpan_author.mason &>
+
+<& /widgets/twitter.mason &>
+
+</div>

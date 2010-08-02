@@ -15,8 +15,12 @@ my @entries = $c->model('DB::Entries')->search({},
 % for ( @entries ) {
 <li>
 <a href="<% $c->uri_for( '/entry', $_->url ) %>"><% $_->title %></a>
-<% $_->created %>
 </li>
 % }
 </ul>
+
+<p align="right" style="margin: 0px">
+<a href="<% $c->uri_for( '/entries' ) %>">all entries</a>
+</p>
+
 </div>

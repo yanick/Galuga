@@ -9,6 +9,8 @@ use Module::Install::Catalyst; # Complain loudly if you don't have
 name 'Galuga';
 all_from 'lib/Galuga.pm';
 
+requires 'DateTime::Format::SQLite';
+requires 'DateTime::Format::DateParse';
 requires 'Catalyst::Runtime' => '5.80022';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';

@@ -1,0 +1,17 @@
+<%args>
+@entries
+@tags
+</%args>
+
+<&| /page.mason, %ARGS &>
+
+<h2>Blog entries</h2>
+
+<ul>
+% for my $entry ( @entries ) {
+   <li><a href="<% $c->uri_for( '/entry', $entry->url ) %>"><% $entry->title %></a></li> 
+% }
+</ul>
+
+
+</&>

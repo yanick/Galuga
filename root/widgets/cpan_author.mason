@@ -1,0 +1,13 @@
+<div class="widget">
+<h3>CPAN modules</h3>
+% my $dists = $c->config->{widgets}{cpan_author}{dist};
+<ul>
+% for my $module ( ref $dists ? @$dists : ( $dists ) ) {
+<li>
+% ( my $url = $module ) =~ s/::/-/;
+% $url = "http://search.cpan.org/dist/$url";
+<a href="<% $url %>"><% $module %></a>
+</li>
+% }
+</ul>
+</div>

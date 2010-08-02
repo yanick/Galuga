@@ -2,7 +2,7 @@ package Galuga::Controller::Tag;
 use Moose;
 use namespace::autoclean;
 
-BEGIN {extends 'Catalyst::Controller'; }
+BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
 
@@ -16,47 +16,46 @@ Catalyst Controller.
 
 =cut
 
-
 =head2 index
 
 =cut
 
-sub index :Path :Args {
+sub index : Path : Args {
     my ( $self, $c, @tags ) = @_;
 
-    $c->log->debug( "filtering out tags: @tags" );
+    $c->log->debug("filtering out tags: @tags");
 
-    return unless @tags; 
-    
-    
-    my $tags = $c->model('DB::Tags')->search({}, {
-             group_by => 'tag',
-              select => [
-                    'tag',
-                  { count => 'entry_path' }
-              ],
-              as => [ qw/ tag nbr_entries / ],
-         } );
+    return unless @tags;
+
+    my $tags = $c->model('DB::Tags')->search(
+        {},
+        {   group_by => 'tag',
+            select   => [ 'tag', { count => 'entry_path' } ],
+            as       => [qw/ tag nbr_entries /],
+        } );
 
     $c->stash->{tags} = [ $tags->all ];
 
+    $c->stash->{selected_tags} = [@tags];
 
-    $c->stash->{selected_tags} = [ @tags ];
-
-    my @entries = $c->model('DB::Tags')->search({})->get_column('entry_path')->all;
+    my @entries =
+      $c->model('DB::Tags')->search( {} )->get_column('entry_path')->all;
 
     while ( @tags and @entries ) {
-        @entries = $c->model('DB::Tags')->search({ tag => shift @tags,
-                entry_path => { IN => \@entries
-                } })->get_column('entry_path')->all
+        @entries = $c->model('DB::Tags')->search( {
+                tag        => shift @tags,
+                entry_path => { IN => \@entries } }
+        )->get_column('entry_path')->all;
     }
 
     $c->stash->{entries} = [
-        $c->model('DB::Entries')->search({ path => { IN => \@entries } })->all
+        $c->model('DB::Entries')->search(
+            { path     => { IN      => \@entries } },
+            { order_by => { '-desc' => 'created' } }
+          )->all
     ];
 
 }
-
 
 =head1 AUTHOR
 
