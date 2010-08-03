@@ -70,7 +70,7 @@ sub index :Chained('base') :PathPart('') :Args(0) {
     $body =~ s#__ENTRY_DIR__# $c->uri_for( "/entry/$url/files" ) #eg;
 
     my @syntax;
-    while ( $body =~ m#<pre \s+ code=(['"])(.*?)\1#xg ) {
+    while ( $body =~ s#<pre \s+ code=(['"])(.*?)\1#<pre class="brush: $2" #xg ) {
         push @syntax, $2;
     }
 
@@ -78,11 +78,33 @@ sub index :Chained('base') :PathPart('') :Args(0) {
         push @syntax, $2;
     }
 
+    $body =~ s#<cpan>(.*?)</cpan>#cpan_tag($1)#eg;
+    $body =~ s#<galuga_entry>(.*?)</galuga_entry>#entry_tag( $c, $1)#eg;
+
     $c->stash->{syntax_highlight} = [ uniq @syntax ];
 
     $c->stash->{body} = $body;
     
 
+}
+
+sub entry_tag {
+    my $c = shift;
+    my $entry = shift;
+
+    $entry = $c->model( 'DB::Entries' )->find({ url => $entry });
+
+    return "<a href='" . $c->uri_for( '/entry/', $entry->url ) . "'>" 
+                . $entry->title . "</a>";
+
+
+}
+
+sub cpan_tag {
+    my $dist = shift;
+    ( my $dist_url = $dist ) =~ s/::/-/g; 
+
+    return "<a href='http://search.cpan.org/dist/$dist_url'>$dist</a>";
 }
 
 

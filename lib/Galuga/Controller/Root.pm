@@ -56,7 +56,12 @@ sub index :Path :Args(0) {
         { order_by => { '-desc' => 'created' }, limit => 1 }
     );
 
-    $c->go( '/entry/index', [ $entry->next->url ] );
+    $c->stash->{entry} = $entry->next;
+    
+    $c->stash->{template} = '/entry/index.mason';
+
+    $c->detach( 'Entry', 'index' );
+    
 }
 
 sub feed :Path('atom.xml') :Args(0) {
