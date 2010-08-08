@@ -67,7 +67,7 @@ sub index :Chained('base') :PathPart('') :Args(0) {
     my $body = $rs->body;
 
     # __ENTRY_DIR__
-    $body =~ s#__ENTRY_DIR__# $c->uri_for( "/entry/$url/files" ) #eg;
+    $body =~ s#__ENTRY_DIR__# $c->uri_for( "/entry/" . $rs->url . "/files" ) #eg;
 
     my @syntax;
     while ( $body =~ s#<pre \s+ code=(['"])(.*?)\1#<pre class="brush: $2" #xg ) {

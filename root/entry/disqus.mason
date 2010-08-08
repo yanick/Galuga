@@ -7,7 +7,11 @@ $identifier
   /**
     * var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
     */
-    // var disqus_developer = 1;
+
+% if ( $c->config->{disqus}{development} ) {
+var disqus_developer = 1;
+% }
+
 % if ( $identifier ) {
 var disqus_identifier = '<% $identifier %>';
 % }
