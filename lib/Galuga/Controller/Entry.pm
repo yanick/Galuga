@@ -3,6 +3,7 @@ use Moose;
 use namespace::autoclean;
 
 use List::MoreUtils qw/ uniq /;
+use File::Slurp qw/ slurp /;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -69,6 +70,8 @@ sub index :Chained('base') :PathPart('') :Args(0) {
     # __ENTRY_DIR__
     $body =~ s#__ENTRY_DIR__# $c->uri_for( "/entry/" . $rs->url . "/files" ) #eg;
 
+    $body =~ s#(<galuga_code.*?</galuga_code>)#code_snippet( $c, $rs, $1 )#eg;
+
     my @syntax;
     while ( $body =~ s#<pre \s+ code=(['"])(.*?)\1#<pre class="brush: $2" #xg ) {
         push @syntax, $2;
@@ -86,6 +89,22 @@ sub index :Chained('base') :PathPart('') :Args(0) {
     $c->stash->{body} = $body;
     
 
+}
+
+sub code_snippet {
+    my ($c, $entry, $tag) =@_;
+
+    $tag =~ />(.*?)</;
+
+    my $content = slurp( join '/', $c->config->{blog_root}, $entry->path,
+        'files', $1 );
+
+    $content =~ s/</&lt;/g;
+    $content =~ s/>/&gt;/g;
+
+    my ( undef, $lang ) = $tag =~ /code=(['"])(.*?)\1/;
+
+    return "<pre code='$lang'>$content</pre>";
 }
 
 sub entry_tag {
