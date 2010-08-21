@@ -32,12 +32,7 @@
 </div>
 <div class="main_body">
 
-<div class="left_column">
-<& /widgets/tags.mason, tags => \@tags &>
-
-<& /widgets/recent_entries.mason &>
-
-</div>
+<& left_column.mason, %ARGS &>
 
 <div class="middle_column">
 <% $content %>
