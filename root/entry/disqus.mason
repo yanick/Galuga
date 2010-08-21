@@ -2,6 +2,11 @@
 $identifier
 </%args>
 
+%# don't even bother if it's a dev version,
+%# as it seems to mess up the disqus system
+% return if $c->config->{disqus}{development};
+
+
 <div id="disqus_thread"></div>
 <script type="text/javascript">
   /**
