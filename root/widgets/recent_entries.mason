@@ -4,7 +4,7 @@ $nbr_entries => 5
 <%perl>
 my @entries = $c->model('DB::Entries')->search({},
     {
-        limit => $nbr_entries,
+        rows => $nbr_entries,
         order_by => { '-desc' => 'created' },
     }
 );
