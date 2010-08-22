@@ -1,4 +1,4 @@
 <div class="left_column">
     <& /widgets/recent_entries.mason &>
-    <& /widgets/tags.mason &>
+    <& /widgets/recent_tags.mason &>
 </div>

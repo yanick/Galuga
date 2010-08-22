@@ -1,0 +1,8 @@
+<%once>
+use Template::Declare;
+use Galuga::Widget::RecentTags;
+</%once>
+
+% Template::Declare->init( dispatch_to => [ 'Galuga::Widget::RecentTags' ] );
+<% Template::Declare->show( 'widget', c => $c ) %>
+
