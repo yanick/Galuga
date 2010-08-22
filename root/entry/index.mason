@@ -1,6 +1,5 @@
 <%args>
 $entry
-@tags
 $body
 @syntax_highlight => ()
 </%args>

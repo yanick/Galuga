@@ -1,7 +1,4 @@
-<%args>
-@tags
-</%args>
 <div class="left_column">
     <& /widgets/recent_entries.mason &>
-    <& /widgets/tags.mason, tags => \@tags &>
+    <& /widgets/tags.mason &>
 </div>

@@ -1,5 +1,4 @@
 <%args>
-@tags
 @syntax_highlight => ()
 </%args>
 % my $content = $m->content;

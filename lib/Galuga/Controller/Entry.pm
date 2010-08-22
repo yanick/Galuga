@@ -51,18 +51,6 @@ sub index :Chained('base') :PathPart('') :Args(0) {
 
     my $url = $c->stash->{url};
 
-    my $tags = $c->model('DB::Tags')->search({}, {
-             group_by => 'tag',
-              select => [
-                    'tag',
-                  { count => 'entry_path' }
-              ],
-              as => [ qw/ tag nbr_entries / ],
-         } );
-
-    $c->stash->{tags} = [ $tags->all ];
-
-
     my $rs = $c->stash->{entry};
 
     my $body = $rs->body;
