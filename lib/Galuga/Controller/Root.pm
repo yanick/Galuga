@@ -69,7 +69,7 @@ sub feed :Path('atom.xml') :Args(0) {
 
     # get the last 10 entries and wrap'em
     my @entries = $c->model('DB::Entries')->search({},
-        { order_by => { '-desc' => 'created' }, limit => 10 }
+        { order_by => { '-desc' => 'created' }, rows => 10 }
     );
 
     my $feed = XML::Atom::SimpleFeed->new( 
