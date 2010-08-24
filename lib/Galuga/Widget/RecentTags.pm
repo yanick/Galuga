@@ -9,13 +9,36 @@ use base 'Template::Declare';
 template widget => sub {
     my $self = shift;
     my %arg  = @_;
+    my $c    = $arg{c};
 
     div {
         attr { class => 'widget tags_listing' };
         h3 { 'Recent tags' };
-        show( 'tag', %arg, tag => $_ )
-          for sort { lc( $a->tag ) cmp lc( $b->tag ) }
-          $self->get_tags( $arg{c} );
+        ul {
+            attr { id => 'recent_tags' };
+            map { show( 'tag', %arg, tag => $_ ) }
+              sort { lc( $a->tag ) cmp lc( $b->tag ) }
+              $self->get_tags( $arg{c} );
+        };
+
+        p {
+            attr { align => 'right', };
+            a {
+                attr { href => $c->uri_for('/tags') } 'all tags';
+            }
+
+        }
+    }
+
+    script { outs_raw <<'END_SCRIPT';
+$(function(){
+    $('#recent_tags').tagcloud({ 
+        type: "list",
+        colormin: "AB0404",
+        colormax: "AB0404"
+    }).find('li').css('padding-right', '3px' );
+});
+END_SCRIPT
     }
 
 };
@@ -23,15 +46,14 @@ template widget => sub {
 template 'tag' => sub {
     my ( $self, %arg ) = @_;
 
-    div {
+    li {
+        attr {
+            value => $arg{tag}->get_column('nbr_entries'),
+            title => $arg{tag}->tag
+        };
         a {
-            attr { href => $arg{c}->uri_for('/tag') . '/' . $arg{tag}->tag }
-              $arg{tag}->tag . ' ';
-        }
-
-        div {
-            attr { class => 'count' } '('
-              . $arg{tag}->get_column('nbr_entries') . ')';
+            attr { href => $arg{c}->uri_for( '/tag', $arg{tag}->tag ) };
+            $arg{tag}->tag;
         }
     }
 };
@@ -39,11 +61,13 @@ template 'tag' => sub {
 sub get_tags {
     my ( $self, $c ) = @_;
 
-    my @tags = $c->model('DB::Entries')->search({},
-        { order_by => { '-desc' => 'created' },
-                rows => 5 } )->search_related('tags',{})->all;
+    my @tags = $c->model('DB::Entries')->search(
+        {},
+        {   order_by => { '-desc' => 'created' },
+            rows     => 5
+        } )->search_related( 'tags', {} )->all;
 
-    return $c->model('DB::Tags')->search( 
+    return $c->model('DB::Tags')->search(
         { tag => { 'IN' => [ map { $_->tag } @tags ] }, },
         {   group_by => 'tag',
             order_by => 'tag',

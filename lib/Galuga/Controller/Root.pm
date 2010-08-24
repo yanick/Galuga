@@ -29,6 +29,24 @@ The root page (/)
 
 =cut
 
+sub tags :Path('tags') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    # get all tags and their tally
+    
+    $c->stash->{tags} = {
+        map { $_->tag => $_->get_column( 'nbr_entries' ) }
+            $c->model('DB::Tags')->search( 
+        { },
+        {   group_by => 'tag',
+            order_by => 'tag',
+            select   => [ 'tag', { count => 'entry_path' } ],
+            as       => [qw/ tag nbr_entries /],
+        } )->all
+    };
+
+}
+
 sub entries :Path( 'entries' ) :Args(0) {
     my ( $self, $c ) = @_;
 

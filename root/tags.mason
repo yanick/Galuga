@@ -1,0 +1,24 @@
+<%args>
+%tags
+</%args>
+<&| /page.mason, %ARGS &>
+
+<h2>Tags</h2>
+
+<div style="padding: 20px">
+<ul id="tagcloud">
+% for ( sort { lc($a) cmp lc($b) } keys %tags ) {
+    <li value="<% $tags{$_}  %>" title="<% $_ %>"> <a href="<%
+    $c->uri_for( '/tag', $_ ) %>"><% $_ %></a></li>
+% }
+</ul></div>
+<script>
+$(function(){
+    $('#tagcloud').tagcloud({ 
+        type: "list",
+        colormin: "AB0404",
+        colormax: "AB0404"
+    }).find('li').css('padding-right', '15px' );
+});
+</script>
+</&>
