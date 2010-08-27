@@ -2,6 +2,8 @@
 
 <& /widgets/cpan_author.mason &>
 
+<& /widgets/ironman.mason &>
+
 <& /widgets/twitter.mason &>
 
 </div>

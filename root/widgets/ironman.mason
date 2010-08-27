@@ -1,0 +1,8 @@
+<%once>
+use Template::Declare;
+use Galuga::Widget::Ironman;
+</%once>
+
+% Template::Declare->init( dispatch_to => [ 'Galuga::Widget::Ironman' ] );
+<% Template::Declare->show( 'widget', $c ) %>
+
