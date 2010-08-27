@@ -49,12 +49,8 @@
 
 </div>
 
+
 <div class="footer" style="clear: both">
-<div align="right" style="margin-right: 100px">
-<a href="http://github.com/yanick/galuga">
-    <img src="<% $c->uri_for( '/static/galuga_button.png' ) %>" border="0"
-    alt="Powered by a Gamboling Beluga"/>
-</a></div>
 </div>
 
 </body>

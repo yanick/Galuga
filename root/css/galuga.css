@@ -93,6 +93,11 @@ div.tags_listing .count {
     font-style: italic;
 }
 
+div.widget {
+    margin-bottom: 20px;
+}
+
 div.widget ul {
     padding-left: 20px;
 }
+
