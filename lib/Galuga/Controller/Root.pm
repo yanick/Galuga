@@ -98,12 +98,26 @@ sub feed :Path('atom.xml') :Args(0) {
     );
 
     for ( @entries ) {
+
+        my $body = $_->body;
+
+    # __ENTRY_DIR__
+    $body =~ s#__ENTRY_DIR__# $c->uri_for( "/entry/" . $_->url . "/files" ) #eg;
+
+    $body =~
+    s#(<galuga_code.*?</galuga_code>)#Galuga::Controller::Entry::code_snippet( $c, $_, $1 )#eg;
+
+    $body =~ s#<pre \s+ code=(['"])(.*?)\1#<pre class="brush: $2" #xg;
+
+    $body =~ s#<cpan>(.*?)</cpan>#Galuga::Controller::Entry::cpan_tag($1)#eg;
+    $body =~ s#<galuga_entry>(.*?)</galuga_entry>#Galuga::Controller::Entry::entry_tag( $c, $1)#eg;
+
         $feed->add_entry(
             title => $_->title,
             link => $c->uri_for( '/entry', $_->url ),
             content => {
                 type => 'xhtml',
-                content => $_->body,
+                content => $body,
             },
             updated => $_->created->iso8601,
         );

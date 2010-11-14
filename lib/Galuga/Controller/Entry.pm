@@ -87,6 +87,7 @@ sub code_snippet {
     my $content = slurp( join '/', $c->config->{blog_root}, $entry->path,
         'files', $1 );
 
+    $content =~ s/&/&amp;/g;
     $content =~ s/</&lt;/g;
     $content =~ s/>/&gt;/g;
 
