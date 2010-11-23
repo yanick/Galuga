@@ -116,7 +116,7 @@ sub import_entry {
     $entry->insert;
 
     for ( @{ $header->{tags} } ) {
-        $entry->create_related( 'tags', { tag => $_ } );
+        $entry->add_to_tags( { label => $_ } ) unless $entry->tags({label => $_ })->find;
     }
 
 }

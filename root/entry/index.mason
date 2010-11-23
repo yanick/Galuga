@@ -48,7 +48,7 @@ $entry
 <b>tags: </b>
 % $m->print( join ', ', 
 % map { "<a href='" . $c->uri_for( "/tag/$_" ) . "'>$_</a>" } 
-% sort $entry->tags->get_column( 'tag' )->all );
+% sort $entry->tags->get_column( 'label' )->all );
 </div>
 </%def>
 

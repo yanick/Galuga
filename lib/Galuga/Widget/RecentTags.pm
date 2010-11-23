@@ -17,7 +17,7 @@ template widget => sub {
         ul {
             attr { id => 'recent_tags' };
             map { show( 'tag', %arg, tag => $_ ) }
-              sort { lc( $a->tag ) cmp lc( $b->tag ) }
+              sort { lc( $a->label ) cmp lc( $b->label ) }
               $self->get_tags( $arg{c} );
         };
 
@@ -48,12 +48,12 @@ template 'tag' => sub {
 
     li {
         attr {
-            value => $arg{tag}->get_column('nbr_entries'),
-            title => $arg{tag}->tag
+            value => $arg{tag}->count_related( 'entry_tags' ),
+            title => $arg{tag}->label
         };
         a {
-            attr { href => $arg{c}->uri_for( '/tag', $arg{tag}->tag ) };
-            $arg{tag}->tag;
+            attr { href => $arg{c}->uri_for( '/tag', $arg{tag}->label ) };
+            $arg{tag}->label;
         }
     }
 };
@@ -61,19 +61,13 @@ template 'tag' => sub {
 sub get_tags {
     my ( $self, $c ) = @_;
 
-    my @tags = $c->model('DB::Entries')->search(
+    my %tags = map { $_->label => $_ } $c->model('DB::Entries')->search(
         {},
         {   order_by => { '-desc' => 'created' },
             rows     => 5
-        } )->search_related( 'tags', {} )->all;
+        } )->search_related( 'entry_tags' )->search_related( 'tag' )->all;
 
-    return $c->model('DB::Tags')->search(
-        { tag => { 'IN' => [ map { $_->tag } @tags ] }, },
-        {   group_by => 'tag',
-            order_by => 'tag',
-            select   => [ 'tag', { count => 'entry_path' } ],
-            as       => [qw/ tag nbr_entries /],
-        } )->all;
+    return values %tags;
 }
 
 1;

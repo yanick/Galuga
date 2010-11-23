@@ -35,14 +35,7 @@ sub tags :Path('tags') :Args(0) {
     # get all tags and their tally
     
     $c->stash->{tags} = {
-        map { $_->tag => $_->get_column( 'nbr_entries' ) }
-            $c->model('DB::Tags')->search( 
-        { },
-        {   group_by => 'tag',
-            order_by => 'tag',
-            select   => [ 'tag', { count => 'entry_path' } ],
-            as       => [qw/ tag nbr_entries /],
-        } )->all
+        map { $_->label => $_->count_related( 'entry_tags' ) } $c->model('DB::Tags')->search->all
     };
 
 }
@@ -50,18 +43,9 @@ sub tags :Path('tags') :Args(0) {
 sub entries :Path( 'entries' ) :Args(0) {
     my ( $self, $c ) = @_;
 
-
-    my $tags = $c->model('DB::Tags')->search({}, {
-             group_by => 'tag',
-              select => [
-                    'tag',
-                  { count => 'entry_path' }
-              ],
-              as => [ qw/ tag nbr_entries / ],
-         } );
-
-    $c->stash->{tags} = [ $tags->all ];
-    # the whole she-bang
+    $c->stash->{tags} = {
+        map { $_->label => $_->count_related( 'entry_tags' ) } $c->model('DB::Tags')->search->all
+    };
 
     $c->stash->{entries} = [ $c->model('DB::Entries')->search({},{order_by=>{
                 '-desc' => 'created' } } )->all ];

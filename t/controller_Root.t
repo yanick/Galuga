@@ -2,13 +2,10 @@ use strict;
 use warnings;
 use Test::More;
 
-         # We're in a t/*.t test script...
-         use Test::WWW::Mechanize::Catalyst 'Galuga';
-                                     my $mech =
-                                     Test::WWW::Mechanize::Catalyst->new;
+use Test::WWW::Mechanize::Catalyst 'Galuga';
 
-$mech->get_ok('/');
+my $mech = Test::WWW::Mechanize::Catalyst->new;
 
-print $mech->content;
+$mech->get_ok('/entries');
 
 done_testing();

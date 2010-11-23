@@ -8,18 +8,25 @@ use base qw/DBIx::Class::Core/;
 __PACKAGE__->table( 'Tags' );
 
 __PACKAGE__->add_columns(
-    entry_path => {
-        data_type => 'VARCHAR',
-        size => 50,
-        is_nullable => 0,
+    id => {
+        data_type => 'INTEGER',
+        auto_increment => 1,
     },
-    tag => {
+    label => {
         data_type => 'VARCHAR',
         size => 20,
         is_nullable => 0,
     },
 );
 
-__PACKAGE__->set_primary_key(qw/ entry_path tag / );
+__PACKAGE__->set_primary_key(qw/ id / );
+
+
+__PACKAGE__->has_many(
+    entry_tags => 'Galuga::Schema::Result::EntryTags',
+    'tag_id'
+);
+
+__PACKAGE__->many_to_many( entries => 'entry_tags', 'entry' );
 
 1;
