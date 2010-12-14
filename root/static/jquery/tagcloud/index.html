@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>jquery tagcloud</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<link rel="stylesheet" type="text/css" media="screen" href="style/screen.css" />
+		<script type="text/javascript" src="scripts/jquery-1.2.6.min.js"></script>
+		<script type="text/javascript" src="scripts/jquery.tagcloud.min.js"></script>
+		<script type="text/javascript" src="scripts/jquery.tinysort.min.js"></script>
+		<script type="text/javascript">
+			<!--
+			$(function(){
+				$("h1").text("jQuery."+$.tagcloud.id+" "+$.tagcloud.version);
+				$("#page>table>tbody>tr:odd").addClass("odd");
+				$("#page>table>tbody>tr:even").addClass("even");
+				$("#page tbody>tr").find("td:eq(0)").addClass("property");
+				$("#footer").html($("#footer").html().replace(/(project)/,$.tagcloud.id));
+
+				var mMenu = $("<ul id=\"menu\" />").appendTo("#header");
+				$("h2").each(function(i,o){
+					mMenu.append("<li> <a href=\"#"+$(this).text()+"\">"+$(this).text()+"</a></li>");
+					$(this).attr("id",$(this).text());
+				});
+
+				var aLi = $("#delicious>li");
+				var iLi = aLi.length;
+				$.each(aLi,function(i,o){
+					//$(o).val(iLi-i);
+					//$(o).val(Math.round(iLi*Math.sqrt(1-i/iLi)));
+					$(o).val(Math.round(iLi*Math.pow(1-i/iLi,2))).attr("title",$(o).text());
+				});
+				
+
+				$("pre.example").each(function(i,o){
+					var mPre = $(o);
+					var aTg = mPre.text().match(/(\w+)(?=#)/);
+					var sTg = aTg===null?"ul":aTg[0];
+					var sId = mPre.text().match(/(?:#)(\w+)/)[1];
+					mPre.after("<"+sTg+" id=\""+sId+"\" class=\"xmpl\"></"+sTg+">").after("<p>test: <a onclick='"+mPre.text().replace(/\n/g,"")+"'>create tagcloud</a> or <a onclick=\"refill('"+sId+"')\">reset</a></p>");
+					refill(sId);
+				});
+			});
+
+			function refill(s) {
+				var mList = $("#"+s);
+				mList.html($("#delicious>li").clone());
+				$.each(["list-style","margin","padding","position","height"], function(i,o){ mList.css(o,$("#delicious").css(o)); } );
+			}
+			-->
+		</script>
+	</head>
+	<body>
+		<div id="header">
+			<h1><span>TagCloud</span></h1>
+		</div>
+		<div id="page">
+			<p>TagCloud will convert any ordered or unordered list to a <a href="http://en.wikipedia.org/wiki/Tag_cloud">tagcloud</a>.<br/>The size and color depend on the list elements value property or, if no value is set, the elements index.</p>
+			<p>You can download TagCloud at <a href="http://plugins.jquery.com/project/TagCloud">http://plugins.jquery.com/project/TagCloud</a> since that will always have the latest release. This is also the place where you can report bugs or request new features.</p>
+
+			<p>The examples below should help getting you on your way.</p>
+
+			
+			<h2>usage</h2>
+
+			<p>The first parse in the TagCloud function can either be nothing...</p>
+			<pre>$("ul").tagcloud();</pre>
+			<p>or a 'settings' object.</p>
+			<pre>$("ul").tagcloud({height:300});</pre>
+
+			<p>Change default settings globally like so:</p>
+			<pre>$.tagcloud.defaults.sizemin = 8;</pre>
+			
+			<p>TagCloud has eight possible settings:</p>
+
+			<table id="properties" cellpadding="0" cellspacing="0">
+				<thead><tr><th>property</th><th>type</th><th>description</th><th>possible values</th><th>default</th></tr></thead>
+				<tbody>
+					<tr>
+						<td>height</td>
+						<td>Integer</td>
+						<td>The height of the tagcloud</td>
+						<td>integers, null or "auto"</td>
+						<td>null</td>
+					</tr>
+					<tr>
+						<td>type</td>
+						<td>String</td>
+						<td>the visual representation of the tagcloud</td>
+						<td>"cloud", "list" or "sphere"</td>
+						<td>"cloud"</td>
+					</tr>
+					<tr>
+						<td>sizemax</td>
+						<td>Integer</td>
+						<td>maximum font-size</td>
+						<td>integers</td>
+						<td>20</td>
+					</tr>
+					<tr>
+						<td>sizemin</td>
+						<td>Integer</td>
+						<td>minimum font-size</td>
+						<td>integers</td>
+						<td>10</td>
+					</tr>
+					<tr>
+						<td>colormax</td>
+						<td>String</td>
+						<td>maximum color</td>
+						<td>a hexadecimal with a length of either 3 or 6</td>
+						<td>"00F"</td>
+					</tr>
+					<tr>
+						<td>colormin</td>
+						<td>String</td>
+						<td>minimum color</td>
+						<td>a hexadecimal with a length of either 3 or 6.</td>
+						<td>"B4D2FF"</td>
+					</tr>
+					<tr>
+						<td>seed</td>
+						<td>Integer</td>
+						<td>The randomseed that is used to calculate the positions. A null value will cause a random randomseed. Works only with type=="cloud".</td>
+						<td>integer or null</td>
+						<td>null</td>
+					</tr>
+					<tr>
+						<td>power</td>
+						<td>Float</td>
+						<td>The power with wich the elements radius is calculated. Works only with type=="sphere".</td>
+						<td>a floating point greater than 0</td>
+						<td>.5</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h2>examples</h2>
+
+			<p>The following examples use a list of tags taken from <a href="http://del.icio.us/tag/">http://del.icio.us/tag/</a> (lists are set to a height and hidden overflow so not to waste space).<br/>
+			Using jQuery I've added a value to the list elements to create more smaller elements. If you do not provide a value for the list element the value will be its index number.<br/>
+			In some of these examples I've made use of the <a href="http://plugins.jquery.com/project/TinySort">TinySort</a> plugin.</p>
+
+			<h3>default</h3>
+			<p>If no properties are specified the tagcloud will default to a height that corresponds with the with of the list and the number of list elements.</p>
+			<pre class="example">$("#xdef").tagcloud();</pre>
+
+			<h3>list</h3>
+			<p>Tagclouds can also be displayed as lists. In this example the list is sorted alfabetically after the tagcloud list is created.</p>
+			<pre class="example">$("#xlist").tagcloud({type:"list",sizemin:8}).find("li").tsort();</pre>
+
+			<h3>sphere</h3>
+			<p>Clouds can be rendered spherically by means of the golden angle.</p>
+			<pre class="example">$("#xsphere>li").tsort({order:"rand"});
+$("#xsphere").tagcloud({type:"sphere",sizemin:8});</pre>
+
+			<h3>power</h3>
+			<p>The radius of the elements in the spherical cloud can be altered by setting the power property.</p>
+			<pre class="example">$("#xpower").tagcloud({type:"sphere",sizemin:8,sizemax:26,power:.3});</pre>
+			<p>A value lower than 1 creates a sperical effect, a value higher than 1 creates a tubelike effect.</p>
+			<pre class="example">$("#xpowerbig>li").tsort({attr:"value"});
+$("#xpowerbig").tagcloud({type:"sphere",sizemin:3,sizemax:26,power:1.3});</pre>
+
+			<h3>seed</h3>
+			<p>The default tagcloud will position randomly. TagCloud has a build in random number generator (Park-Miller) that enables you to set the random seed. If you set the seed TagCloud will always generate the same random positions. If this sounds like gibberish to you just compare this example with the 'default' one.</p>
+			<pre class="example">$("#xseed").tagcloud({seed:23});</pre>
+
+			<h3>size and height</h3>
+			<p>You can set the minimum and maximum font-size with the properties sizemin and sizemax. Different font-sizes mean different cloud sizes so there's also the possibility to set its height (simply use css to set the width).</p>
+			<pre class="example">$("#xsize").tagcloud({sizemin:1,sizemax:12,height:150});</pre>
+
+			<h3>colors</h3>
+			<p>Like font-size, you can also set the minimum and maximum color using colormin and colormax. The value must be a hexadecimal value with a length of either 3 or 6.</p>
+			<pre class="example">$("#xcolor").tagcloud({colormin:"d88",colormax:"0a0"});</pre>
+
+			<ul id="delicious" class="xmpl">
+
+				<li><a href="http://del.icio.us/tag/design">design</a> </li>
+				<li><a href="http://del.icio.us/tag/blog">blog</a> </li>
+				<li><a href="http://del.icio.us/tag/programming">programming</a> </li>
+				<li><a href="http://del.icio.us/tag/tools">tools</a> </li>
+				<li><a href="http://del.icio.us/tag/music">music</a> </li>
+
+				<li><a href="http://del.icio.us/tag/software">software</a> </li>
+				<li><a href="http://del.icio.us/tag/webdesign">webdesign</a> </li>
+				<li><a href="http://del.icio.us/tag/web2.0">web2.0</a> </li>
+				<li><a href="http://del.icio.us/tag/video">video</a> </li>
+				<li><a href="http://del.icio.us/tag/art">art</a> </li>
+				<li><a href="http://del.icio.us/tag/reference">reference</a> </li>
+
+				<li><a href="http://del.icio.us/tag/linux">linux</a> </li>
+				<li><a href="http://del.icio.us/tag/tutorial">tutorial</a> </li>
+				<li><a href="http://del.icio.us/tag/photography">photography</a> </li>
+				<li><a href="http://del.icio.us/tag/howto">howto</a> </li>
+				<li><a href="http://del.icio.us/tag/inspiration">inspiration</a> </li>
+				<li><a href="http://del.icio.us/tag/web">web</a> </li>
+
+				<li><a href="http://del.icio.us/tag/css">css</a> </li>
+				<li><a href="http://del.icio.us/tag/free">free</a> </li>
+				<li><a href="http://del.icio.us/tag/development">development</a> </li>
+				<li><a href="http://del.icio.us/tag/education">education</a> </li>
+				<li><a href="http://del.icio.us/tag/javascript">javascript</a> </li>
+				<li><a href="http://del.icio.us/tag/travel">travel</a> </li>
+
+				<li><a href="http://del.icio.us/tag/news">news</a> </li>
+				<li><a href="http://del.icio.us/tag/flash">flash</a> </li>
+				<li><a href="http://del.icio.us/tag/shopping">shopping</a> </li>
+				<li><a href="http://del.icio.us/tag/business">business</a> </li>
+				<li><a href="http://del.icio.us/tag/blogs">blogs</a> </li>
+				<li><a href="http://del.icio.us/tag/tips">tips</a> </li>
+
+				<li><a href="http://del.icio.us/tag/mac">mac</a> </li>
+				<li><a href="http://del.icio.us/tag/food">food</a> </li>
+				<li><a href="http://del.icio.us/tag/google">google</a> </li>
+				<li><a href="http://del.icio.us/tag/science">science</a> </li>
+				<li><a href="http://del.icio.us/tag/technology">technology</a> </li>
+				<li><a href="http://del.icio.us/tag/politics">politics</a> </li>
+
+				<li><a href="http://del.icio.us/tag/books">books</a> </li>
+				<li><a href="http://del.icio.us/tag/games">games</a> </li>
+				<li><a href="http://del.icio.us/tag/java">java</a> </li>
+				<li><a href="http://del.icio.us/tag/resources">resources</a> </li>
+				<li><a href="http://del.icio.us/tag/recipes">recipes</a> </li>
+				<li><a href="http://del.icio.us/tag/health">health</a> </li>
+
+				<li><a href="http://del.icio.us/tag/opensource">opensource</a> </li>
+				<li><a href="http://del.icio.us/tag/research">research</a> </li>
+				<li><a href="http://del.icio.us/tag/funny">funny</a> </li>
+				<li><a href="http://del.icio.us/tag/toread">toread</a> </li>
+				<li><a href="http://del.icio.us/tag/photoshop">photoshop</a> </li>
+				<li><a href="http://del.icio.us/tag/firefox">firefox</a> </li>
+
+				<li><a href="http://del.icio.us/tag/humor">humor</a> </li>
+				<li><a href="http://del.icio.us/tag/online">online</a> </li>
+				<li><a href="http://del.icio.us/tag/security">security</a> </li>
+				<li><a href="http://del.icio.us/tag/internet">internet</a> </li>
+				<li><a href="http://del.icio.us/tag/windows">windows</a> </li>
+				<li><a href="http://del.icio.us/tag/wordpress">wordpress</a> </li>
+
+				<li><a href="http://del.icio.us/tag/fun">fun</a> </li>
+				<li><a href="http://del.icio.us/tag/php">php</a> </li>
+				<li><a href="http://del.icio.us/tag/marketing">marketing</a> </li>
+				<li><a href="http://del.icio.us/tag/search">search</a> </li>
+				<li><a href="http://del.icio.us/tag/graphics">graphics</a> </li>
+				<li><a href="http://del.icio.us/tag/portfolio">portfolio</a> </li>
+
+				<li><a href="http://del.icio.us/tag/python">python</a> </li>
+				<li><a href="http://del.icio.us/tag/tutorials">tutorials</a> </li>
+				<li><a href="http://del.icio.us/tag/social">social</a> </li>
+				<li><a href="http://del.icio.us/tag/history">history</a> </li>
+				<li><a href="http://del.icio.us/tag/cool">cool</a> </li>
+				<li><a href="http://del.icio.us/tag/mobile">mobile</a> </li>
+
+				<li><a href="http://del.icio.us/tag/media">media</a> </li>
+				<li><a href="http://del.icio.us/tag/community">community</a> </li>
+				<li><a href="http://del.icio.us/tag/download">download</a> </li>
+				<li><a href="http://del.icio.us/tag/ajax">ajax</a> </li>
+				<li><a href="http://del.icio.us/tag/photo">photo</a> </li>
+				<li><a href="http://del.icio.us/tag/diy">diy</a> </li>
+
+				<li><a href="http://del.icio.us/tag/ruby">ruby</a> </li>
+				<li><a href="http://del.icio.us/tag/culture">culture</a> </li>
+				<li><a href="http://del.icio.us/tag/illustration">illustration</a> </li>
+				<li><a href="http://del.icio.us/tag/osx">osx</a> </li>
+				<li><a href="http://del.icio.us/tag/rails">rails</a> </li>
+				<li><a href="http://del.icio.us/tag/freeware">freeware</a> </li>
+
+				<li><a href="http://del.icio.us/tag/fashion">fashion</a> </li>
+				<li><a href="http://del.icio.us/tag/library">library</a> </li>
+				<li><a href="http://del.icio.us/tag/architecture">architecture</a> </li>
+				<li><a href="http://del.icio.us/tag/article">article</a> </li>
+				<li><a href="http://del.icio.us/tag/photos">photos</a> </li>
+				<li><a href="http://del.icio.us/tag/writing">writing</a> </li>
+
+				<li><a href="http://del.icio.us/tag/ubuntu">ubuntu</a> </li>
+				<li><a href="http://del.icio.us/tag/seo">seo</a> </li>
+				<li><a href="http://del.icio.us/tag/audio">audio</a> </li>
+				<li><a href="http://del.icio.us/tag/apple">apple</a> </li>
+				<li><a href="http://del.icio.us/tag/environment">environment</a> </li>
+				<li><a href="http://del.icio.us/tag/twitter">twitter</a> </li>
+
+				<li><a href="http://del.icio.us/tag/iphone">iphone</a> </li>
+				<li><a href="http://del.icio.us/tag/jobs">jobs</a> </li>
+				<li><a href="http://del.icio.us/tag/home">home</a> </li>
+				<li><a href="http://del.icio.us/tag/productivity">productivity</a> </li>
+				<li><a href="http://del.icio.us/tag/youtube">youtube</a> </li>
+				<li><a href="http://del.icio.us/tag/webdev">webdev</a> </li>
+
+				<li><a href="http://del.icio.us/tag/work">work</a> </li>
+				<li><a href="http://del.icio.us/tag/tv">tv</a> </li>
+				<li><a href="http://del.icio.us/tag/advertising">advertising</a> </li>
+				<li><a href="http://del.icio.us/tag/microsoft">microsoft</a> </li>
+				<li><a href="http://del.icio.us/tag/typography">typography</a> </li>
+				<li><a href="http://del.icio.us/tag/fic">fic</a> </li>
+
+				<li><a href="http://del.icio.us/tag/finance">finance</a> </li>
+				<li><a href="http://del.icio.us/tag/mp3">mp3</a> </li>
+				<li><a href="http://del.icio.us/tag/recipe">recipe</a> </li>
+				<li><a href="http://del.icio.us/tag/jquery">jquery</a> </li>
+				<li><a href="http://del.icio.us/tag/hardware">hardware</a> </li>
+				<li><a href="http://del.icio.us/tag/green">green</a> </li>
+
+				<li><a href="http://del.icio.us/tag/blogging">blogging</a> </li>
+				<li><a href="http://del.icio.us/tag/movies">movies</a> </li>
+				<li><a href="http://del.icio.us/tag/computer">computer</a> </li>
+				<li><a href="http://del.icio.us/tag/learning">learning</a> </li>
+				<li><a href="http://del.icio.us/tag/wiki">wiki</a> </li>
+				<li><a href="http://del.icio.us/tag/images">images</a> </li>
+
+				<li><a href="http://del.icio.us/tag/2008">2008</a> </li>
+				<li><a href="http://del.icio.us/tag/.net">.net</a> </li>
+				<li><a href="http://del.icio.us/tag/socialnetworking">socialnetworking</a> </li>
+				<li><a href="http://del.icio.us/tag/language">language</a> </li>
+				<li><a href="http://del.icio.us/tag/math">math</a> </li>
+				<li><a href="http://del.icio.us/tag/collaboration">collaboration</a> </li>
+
+				<li><a href="http://del.icio.us/tag/au">au</a> </li>
+				<li><a href="http://del.icio.us/tag/visualization">visualization</a> </li>
+				<li><a href="http://del.icio.us/tag/lifehacks">lifehacks</a> </li>
+				<li><a href="http://del.icio.us/tag/code">code</a> </li>
+				<li><a href="http://del.icio.us/tag/cooking">cooking</a> </li>
+				<li><a href="http://del.icio.us/tag/energy">energy</a> </li>
+
+				<li><a href="http://del.icio.us/tag/interesting">interesting</a> </li>
+				<li><a href="http://del.icio.us/tag/psychology">psychology</a> </li>
+				<li><a href="http://del.icio.us/tag/tech">tech</a> </li>
+				<li><a href="http://del.icio.us/tag/teaching">teaching</a> </li>
+				<li><a href="http://del.icio.us/tag/game">game</a> </li>
+				<li><a href="http://del.icio.us/tag/english">english</a> </li>
+
+				<li><a href="http://del.icio.us/tag/plugin">plugin</a> </li>
+				<li><a href="http://del.icio.us/tag/book">book</a> </li>
+				<li><a href="http://del.icio.us/tag/database">database</a> </li>
+				<li><a href="http://del.icio.us/tag/economics">economics</a> </li>
+				<li><a href="http://del.icio.us/tag/videos">videos</a> </li>
+				<li><a href="http://del.icio.us/tag/tool">tool</a> </li>
+
+				<li><a href="http://del.icio.us/tag/socialmedia">socialmedia</a> </li>
+				<li><a href="http://del.icio.us/tag/email">email</a> </li>
+				<li><a href="http://del.icio.us/tag/maps">maps</a> </li>
+			</ul>
+
+		</div>
+		<div id="footer"> 
+			<div>
+				<a href="http://jquery.com/">jQuery<a/>: © 2007 <a href="http://ejohn.org/">John Resig</a> and the <a href="http://docs.jquery.com/About/Contributors">jQuery team</a>.<br/>
+				project: © 2008 <a href="http://www.sjeiti.com/">Ron Valstar</a>
+			</div>
+		</div>
+	</body>
+</html>
