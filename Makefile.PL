@@ -16,6 +16,7 @@ requires 'Catalyst::Runtime' => '5.80022';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Action::RenderView';
+requires 'CatalystX::Component::Traits' => '0.16';
 requires 'Moose';
 requires 'namespace::autoclean';
 requires 'Config::General'; # This should reflect the config file format you've chosen
