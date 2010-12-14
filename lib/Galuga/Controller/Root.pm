@@ -33,11 +33,16 @@ sub tags :Path('tags') :Args(0) {
     my ( $self, $c ) = @_;
 
     # get all tags and their tally
-    
-    $c->stash->{tags} = {
-        map { $_->label => $_->count_related( 'entry_tags' ) } $c->model('DB::Tags')->search->all
-    };
+    my %tags = map { $_->label => $_->count_related( 'entry_tags' ) } $c->model('DB::Tags')->search->all;
+    my @tags = sort { $tags{$a} <=> $tags{$b} } keys %tags;
 
+    for my $i ( 0..$#tags ) {
+        $tags{$tags[$i]} = int( 24 * ($i+1) / @tags );
+    }
+    
+    $c->stash->{tags} = \%tags;
+
+    return;
 }
 
 sub entries :Path( 'entries' ) :Args(0) {
