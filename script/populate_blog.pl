@@ -116,7 +116,8 @@ sub import_entry {
     $entry->insert;
 
     for ( @{ $header->{tags} } ) {
-        $entry->add_to_tags( { label => $_ } ) unless $entry->tags({label => $_ })->find;
+        $entry->add_to_tags( { label => $_ } ) unless $entry->tags({label =>
+                $_ })->search->count > 0;
     }
 
 }
