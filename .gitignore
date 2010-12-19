@@ -1,2 +1,5 @@
 *.swp
 db.sqlite
+blib
+inc
+pm_to_blib
