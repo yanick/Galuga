@@ -44,7 +44,7 @@ $entry => undef
 <div class="header">
 <div class="header-inner">
 <h1><a href="<% $c->uri_for( '/' ) %>"><% $c->config->{blog_name} %></a></h1>
-<div><% $c->config->{tagline} %></div>
+<div class="tagline"><% $c->config->{tagline} %></div>
 </div>
 </div>
 <div class="main_body">

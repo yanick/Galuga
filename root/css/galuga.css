@@ -1,3 +1,12 @@
+@font-face {
+    font-family: Gismonda;
+    src: url('<% $c->uri_for( '/static/fonts/gismonda.ttf' ) %>');
+}
+@font-face {
+    font-family: AquilineTwo;
+    src: url('<% $c->uri_for( '/static/fonts/AquilineTwo.ttf' ) %>');
+}
+
 div.vignette {
     float: right;
 }
@@ -16,10 +25,20 @@ div.header-inner {
 }
 
 div.header h1 {
-    font-family: "trebuchet ms";
-    font-size: 34px;
+    font-family: Gismonda, "trebuchet ms";
+    font-size: 32pt;
+    line-height: 40px;
     font-weight:  bold;
     margin-bottom: 10px;
+}
+
+div.header div.tagline {
+    font-family: AquilineTwo;
+    font-size: 18pt;
+    line-height: 18px;
+    margin-left: 20px;
+    margin-top: -16px;
+
 }
 
 body {
