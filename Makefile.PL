@@ -20,6 +20,7 @@ requires 'CatalystX::Component::Traits' => '0.16';
 requires 'Catalyst::Plugin::PageCache';
 requires 'Catalyst::Plugin::Cache';
 requires 'Cache::FileCache';
+requires 'Catalyst::Plugin::Sitemap';
 requires 'Moose';
 requires 'namespace::autoclean';
 requires 'Config::General'; # This should reflect the config file format you've chosen

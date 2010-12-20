@@ -71,7 +71,13 @@ sub index :Path :Args(0) {
     
 }
 
-sub feed :Path('atom.xml') :Args(0) {
+sub sitemap :Path('sitemap') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->res->body( $c->sitemap_as_xml );
+}
+
+sub feed :Path('atom.xml') :Args(0) :Sitemap {
     my ( $self, $c ) = @_;
 
     # get the last 10 entries and wrap'em

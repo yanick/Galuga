@@ -17,6 +17,7 @@ use Catalyst qw/
     Static::Simple
     Cache 
     PageCache
+    Sitemap
 /;
 
 extends 'Catalyst';

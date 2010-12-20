@@ -46,7 +46,7 @@ sub files :Chained('base') :PathPart( 'files' ) :Args(1) {
 }
 
 
-sub index :Chained('base') :PathPart('') :Args(0) {
+sub index :Chained('base') :PathPart('') :Args(0) :Sitemap(*) {
     my ( $self, $c ) = @_;
 
     my $url = $c->stash->{url};
@@ -75,8 +75,21 @@ sub index :Chained('base') :PathPart('') :Args(0) {
     $c->stash->{syntax_highlight} = [ uniq @syntax ];
 
     $c->stash->{body} = $body;
-    
 
+}
+
+sub index_sitemap {
+    my( $self, $c, $sitemap ) = @_;
+
+    my $entries_rs = $c->model('DB::Entries')->search;
+
+    while ( my $e = $entries_rs->next ) {
+        my $url = $c->uri_for( '/entry/'. $e->url );
+        $sitemap->add( 
+            loc => $url,
+            priority => 0.9 
+        );
+    }
 }
 
 sub code_snippet {
