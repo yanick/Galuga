@@ -15,11 +15,13 @@ use Catalyst::Runtime 5.80;
 use Catalyst qw/
     ConfigLoader
     Static::Simple
+    Cache 
+    PageCache
 /;
 
 extends 'Catalyst';
 
-our $VERSION = '0.3.0';
+our $VERSION = '0.4.0';
 $VERSION = eval $VERSION;
 
 # Configure the application.
@@ -39,6 +41,13 @@ __PACKAGE__->config(
     static => {
                    ignore_dirs => [ 'css' ],
                },
+   'Plugin::Cache' => {
+       backend => {
+           class => 'Cache::FileCache',
+       } },
+   'Plugin::PageCache' => {
+       set_http_headers => 1
+   },
 );
 
 # Start the application

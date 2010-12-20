@@ -114,6 +114,8 @@ sub feed :Path('atom.xml') :Args(0) {
 
     $c->res->content_type( 'application/atom+xml' );
     $c->res->body( $feed->as_string );
+
+    $c->cache_page( 60 * 60 );
 }
 
 =head2 default
