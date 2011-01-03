@@ -18,6 +18,7 @@ use Catalyst qw/
     Cache 
     PageCache
     Sitemap
+    VersionedURI
 /;
 
 extends 'Catalyst';

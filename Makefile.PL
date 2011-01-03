@@ -21,6 +21,7 @@ requires 'Catalyst::Plugin::PageCache';
 requires 'Catalyst::Plugin::Cache';
 requires 'Cache::FileCache';
 requires 'Catalyst::Plugin::Sitemap';
+requires 'Catalyst::Plugin::VersionedURI';
 requires 'Moose';
 requires 'namespace::autoclean';
 requires 'Config::General'; # This should reflect the config file format you've chosen
