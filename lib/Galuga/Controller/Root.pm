@@ -63,12 +63,9 @@ sub index :Path :Args(0) {
         { order_by => { '-desc' => 'created' }, limit => 1 }
     );
 
-    $c->stash->{entry} = $entry->next;
-    
-    $c->stash->{template} = '/entry/index.mason';
-
-    $c->detach( 'Entry', 'index' );
-    
+    $c->res->redirect( 
+        $c->uri_for( 'entry', $entry->next->url )
+    );
 }
 
 sub sitemap :Path('sitemap') :Args(0) {
