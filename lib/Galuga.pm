@@ -16,10 +16,12 @@ use Catalyst qw/
     ConfigLoader
     Static::Simple
     Cache 
-    PageCache
     Sitemap
     VersionedURI
+    SubRequest
+    PageCache
 /;
+# PageCache
 
 extends 'Catalyst';
 
@@ -48,7 +50,7 @@ __PACKAGE__->config(
            class => 'Cache::FileCache',
        } },
    'Plugin::PageCache' => {
-       set_http_headers => 1
+       set_http_headers => 1,
    },
 );
 

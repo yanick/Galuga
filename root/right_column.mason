@@ -1,6 +1,7 @@
 <div class="right_column">
 
-<& /widgets/cpan_author.mason &>
+%# $c->clear_cached_page( '/widget/cpanmodules' );
+<% $c->subreq( '/widget/cpanmodules' ) %>
 
 <& /widgets/ironman.mason &>
 
