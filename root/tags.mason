@@ -12,7 +12,7 @@
     $c->uri_for( '/tag', $_ ) %>"><% $_ %></a></li>
 % }
 </ul></div>
-<script>
+<script type="text/javascript">
 $(function(){
     $('#tagcloud').tagcloud({ 
         type: "list",

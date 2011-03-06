@@ -21,8 +21,8 @@ template widget => sub {
               $self->get_tags( $arg{c} );
         };
 
-        p {
-            attr { align => 'right', };
+        div {
+            attr { style => 'text-align:right;', };
             a {
                 attr { href => $c->uri_for('/tags') } 'all tags';
             }
@@ -30,7 +30,9 @@ template widget => sub {
         }
     }
 
-    script { outs_raw <<'END_SCRIPT';
+    script {
+        attr { type => 'text/javascript' };
+        outs_raw <<'END_SCRIPT';
 $(function(){
     $('#recent_tags').tagcloud({ 
         type: "list",

@@ -19,8 +19,8 @@ my @entries = $c->model('DB::Entries')->search({},
 % }
 </ul>
 
-<p align="right" style="margin: 0px">
+<div style="text-align:right;margin: 0px">
 <a href="<% $c->uri_for( '/entries' ) %>">all entries</a>
-</p>
+</div>
 
 </div>

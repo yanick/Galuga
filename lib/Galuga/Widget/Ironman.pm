@@ -24,6 +24,7 @@ template widget => sub {
         div {
             align is 'center';
             img {
+                attr { alt => 'Perl Iron Man Challenge badge' };
                 src is
                   "http://ironman.enlightenedperl.org/munger/mybadge/$gender/${id}.png";
             };

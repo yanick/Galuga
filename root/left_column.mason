@@ -2,9 +2,9 @@
     <& /widgets/recent_entries.mason &>
     <& /widgets/recent_tags.mason &>
 
-<div class="widget" align="center">
+<div class="widget" style="text-align:center;">
 <a href="http://github.com/yanick/galuga">
-    <img src="<% $c->uri_for( '/static/galuga_button.png' ) %>" border="0"
+    <img src="<% $c->uri_for( '/static/galuga_button.png' ) %>" style="border:0;"
     alt="Powered by a Gamboling Beluga"/>
 </a></div>
 

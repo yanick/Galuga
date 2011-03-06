@@ -24,6 +24,7 @@ Catalyst Controller.
 sub general_style :Path('galuga.css') :Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->res->content_type('text/css');
     $c->stash->{template} = 'css/galuga.css';
 }
 
