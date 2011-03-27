@@ -1,6 +1,5 @@
 <%args>
 @entries
-@tags
 @selected_tags
 </%args>
 

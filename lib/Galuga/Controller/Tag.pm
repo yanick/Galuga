@@ -27,33 +27,25 @@ sub index : Path : Args {
 
     return unless @tags;
 
-    my $tags = $c->model('DB::Tags')->search(
-        {},
-        {   group_by => 'tag',
-            select   => [ 'tag', { count => 'entry_path' } ],
-            as       => [qw/ tag nbr_entries /],
-        } );
-
-    $c->stash->{tags} = [ $tags->all ];
-
     $c->stash->{selected_tags} = [@tags];
 
-    my @entries =
-      $c->model('DB::Tags')->search( {} )->get_column('entry_path')->all;
+    my @entries;
 
-    while ( @tags and @entries ) {
-        @entries = $c->model('DB::Tags')->search( {
-                tag        => shift @tags,
-                entry_path => { IN => \@entries } }
-        )->get_column('entry_path')->all;
+    if ( my $t = $c->model('DB::Tags')->find({label => shift @tags}) ) {
+        @entries = $t->search_related('entry_tags')->search_related('entry')->all;
     }
 
-    $c->stash->{entries} = [
-        $c->model('DB::Entries')->search(
-            { path     => { IN      => \@entries } },
-            { order_by => { '-desc' => 'created' } }
-          )->all
-    ];
+    while ( @tags and @entries ) {
+        my $tag = $c->model('DB::Tags')->find({label => shift @tags });
+        unless ( $tag ) {
+            @entries = ();
+            last;
+        };
+        @entries = grep { $_->count_related('entry_tags', { tag_id => $tag->id } ) }
+                    @entries;
+    }
+
+    $c->stash->{entries} = [ @entries ];
 
 }
 
