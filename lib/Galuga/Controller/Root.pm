@@ -100,6 +100,8 @@ sub feed :Path('atom.xml') :Args(0) :Sitemap {
     s#(<galuga_code.*?</galuga_code>)#Galuga::Controller::Entry::code_snippet( $c, $_, $1 )#eg;
 
     $body =~ s#<pre \s+ code=(['"])(.*?)\1#<pre class="brush: $2" #xg;
+    $body =~ s[<pre>\s*<code>\s*#syntax:\s*(\S+)\n(.*?)</code>\s*</pre>]
+              [<pre class="brush: $1">$2</pre>]gs;
 
     $body =~ s#<cpan>(.*?)</cpan>#Galuga::Controller::Entry::cpan_tag($1)#eg;
     $body =~ s#<galuga_entry>(.*?)</galuga_entry>#Galuga::Controller::Entry::entry_tag( $c, $1)#eg;

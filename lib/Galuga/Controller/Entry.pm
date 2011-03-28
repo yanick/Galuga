@@ -60,6 +60,9 @@ sub index :Chained('base') :PathPart('') :Args(0) :Sitemap(*) {
 
     $body =~ s#(<galuga_code.*?</galuga_code>)#code_snippet( $c, $rs, $1 )#eg;
 
+    $body =~ s[<pre>\s*<code>\s*#syntax:\s*(\S+)\n(.*?)</code>\s*</pre>]
+              [<pre class="brush: $1">$2</pre>]gs;
+
     my @syntax;
     while ( $body =~ s#<pre \s+ code=(['"])(.*?)\1#<pre class="brush: $2" #xg ) {
         push @syntax, $2;
