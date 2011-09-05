@@ -85,7 +85,8 @@ sub feed :Path('atom.xml') :Args(0) :Sitemap {
     my $feed = XML::Atom::SimpleFeed->new( 
         title => $c->config->{blog_url},
         link => $c->config->{blog_url},
-        updated => $entries[0]->created->iso8601,
+        updated   => $entries[0]->created->iso8601,
+        published => $entries[0]->created->iso8601,
         author => $c->config->{blog_author},
     );
 
