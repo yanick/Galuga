@@ -79,18 +79,17 @@ sub feed :Path('atom.xml') :Args(0) :Sitemap {
 
     # get the last 10 entries and wrap'em
     my @entries = $c->model('DB::Entries')->search({},
-        { order_by => { '-desc' => 'created' }, rows => 10 }
+        { order_by => { '-asc' => 'created' }, rows => 10 }
     );
 
-    my $feed = XML::Atom::SimpleFeed->new( 
-        title => $c->config->{blog_url},
-        link => $c->config->{blog_url},
-        updated   => $entries[0]->created->iso8601,
-        published => $entries[0]->created->iso8601,
-        author => $c->config->{blog_author},
-    );
+    my $feed = XML::Feed->new('Atom');
+
+    $feed->title( $c->config->{blog_url} );
+    $feed->link( $c->config->{blog_url} );
+    $feed->author( $c->config->{blog_author} );
 
     for ( @entries ) {
+        my $entry = XML::Feed::Entry->new( 'Atom' );
 
         my $body = $_->body;
 
@@ -107,19 +106,16 @@ sub feed :Path('atom.xml') :Args(0) :Sitemap {
     $body =~ s#<cpan>(.*?)</cpan>#Galuga::Controller::Entry::cpan_tag($1)#eg;
     $body =~ s#<galuga_entry>(.*?)</galuga_entry>#Galuga::Controller::Entry::entry_tag( $c, $1)#eg;
 
-        $feed->add_entry(
-            title => $_->title,
-            link => $c->uri_for( '/entry', $_->url ),
-            content => {
-                type => 'xhtml',
-                content => $body,
-            },
-            updated => $_->created->iso8601,
-        );
+        $entry->title( $_->title );
+        $entry->link( $c->uri_for( '/entry', $_->url ) );
+        $entry->content( $body );
+        $entry->issued( $_->created );
+
+        $feed->add_entry( $entry );
     }
 
     $c->res->content_type( 'application/atom+xml' );
-    $c->res->body( $feed->as_string );
+    $c->res->body( $feed->as_xml );
 
     $c->cache_page( 60 * 60 );
 }

@@ -9,6 +9,8 @@ use Module::Install::Catalyst; # Complain loudly if you don't have
 name 'Galuga';
 all_from 'lib/Galuga.pm';
 
+requires 'DateTime::Format::Flexible';
+requires 'XML::Atom::SimpleFeed';
 requires 'Template::Declare';
 requires 'DateTime::Format::SQLite';
 requires 'DateTime::Format::DateParse';
