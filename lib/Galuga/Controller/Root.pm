@@ -78,8 +78,8 @@ sub feed :Path('atom.xml') :Args(0) :Sitemap {
     my ( $self, $c ) = @_;
 
     # get the last 10 entries and wrap'em
-    my @entries = $c->model('DB::Entries')->search({},
-        { order_by => { '-asc' => 'created' }, rows => 10 }
+    my @entries = reverse $c->model('DB::Entries')->search({},
+        { order_by => { '-desc' => 'created' }, rows => 10 }
     );
 
     my $feed = XML::Feed->new('Atom');
@@ -117,7 +117,7 @@ sub feed :Path('atom.xml') :Args(0) :Sitemap {
     $c->res->content_type( 'application/atom+xml' );
     $c->res->body( $feed->as_xml );
 
-    $c->cache_page( 60 * 60 );
+    #$c->cache_page( 60 * 60 );
 }
 
 =head2 default

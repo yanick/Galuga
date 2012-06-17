@@ -19,7 +19,6 @@ use Catalyst qw/
     Sitemap
     VersionedURI
     SubRequest
-    PageCache
 /;
 # PageCache
 
