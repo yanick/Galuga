@@ -1,4 +1,4 @@
-package Galuga::Store::Entry;
+package Galuga::Store::Model::Entry;
 
 use strict;
 use warnings;
@@ -6,28 +6,34 @@ use warnings;
 use Method::Signatures;
 
 use Moose;
+#use MooseX::ClassAttribute;
 use MooseX::Storage;
 
 with Storage;
 
 has db => (
     traits => [ 'DoNotSerialize' ],
-    is       => 'ro',
+    is       => 'rw',
 );
 
 has model => (
     isa => 'Str',
     is => 'rw',
+    lazy => 1,
     default => method {
         # TODO probably over-complicated
        my( $class ) = $self->meta->class_precedence_list;
-       my( $store_class ) = $self->db->meta->class_precedence_list;
 
-       my $prefix = quotemeta join "::", $store_class, 'Model', '';
-
-       $class =~ s/$prefix//;
+       $class =~ s/^.*?::Model:://;
 
        return $class;
+    },
+    trigger => sub {
+        my $self = shift;
+        die $self;
+        $self->db->model( $self->model )->_wrap( sub {
+            $self->unpack($_[0]);
+        });
     },
 );
 

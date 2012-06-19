@@ -46,13 +46,13 @@ say $store;
 =cut
 
 use Galuga::Store;
-use Galuga::Store::Entry;
+use Galuga::Store::Model::Entry;
 
 my $store = Galuga::Store->connect( 'foo.db' );
 
 $store->model('Entry')->index( 'category' );
 
-my $entry = Galuga::Store::Entry->new(
+my $entry = Galuga::Store::Model::Entry->new(
     db => $store,
     title => 'yadah',
     category => 'x',
@@ -71,16 +71,9 @@ say p $e;
 
 $e = $store->search( Entry => { category => 'x' } );
 
-$store->model('Entry')->_wrap(sub{
-    Galuga::Store::Entry->unpack($_[0]);
-});
-
-$store->type_map->create(
-    'Galuga::Store::Entry',
-    inflate => sub { return Galuga::Store::Entry->unpack( $_[0] ) },
-    deflate => sub { '' },
-);
-$DB::single = 1;
+#$store->model('Entry')->_wrap(sub{
+#    Galuga::Store::Model::Entry->unpack($_[0]);
+#});
 
 say p( $e->all );
 
