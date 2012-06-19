@@ -71,13 +71,18 @@ say p $e;
 
 $e = $store->search( Entry => { category => 'x' } );
 
+$store->model('Entry')->_wrap(sub{
+    Galuga::Store::Entry->unpack($_[0]);
+});
+
 $store->type_map->create(
     'Galuga::Store::Entry',
     inflate => sub { return Galuga::Store::Entry->unpack( $_[0] ) },
     deflate => sub { '' },
 );
 $DB::single = 1;
-say p( Galuga::Store::Entry->unpack( $e->all ) );
+
+say p( $e->all );
 
 __END__
 
