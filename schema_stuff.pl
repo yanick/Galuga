@@ -84,6 +84,9 @@ $DB::single = 1;
 
 say p( $e->all );
 
+
+say $entry->meta->class_precedence_list;
+
 __END__
 
 use Galuga::Schema;

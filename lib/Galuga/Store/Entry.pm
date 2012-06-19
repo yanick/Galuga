@@ -8,11 +8,27 @@ use Method::Signatures;
 use Moose;
 use MooseX::Storage;
 
-with Storage( format => 'JSON' );
+with Storage;
 
 has db => (
     traits => [ 'DoNotSerialize' ],
     is       => 'ro',
+);
+
+has model => (
+    isa => 'Str',
+    is => 'rw',
+    default => method {
+        # TODO probably over-complicated
+       my( $class ) = $self->meta->class_precedence_list;
+       my( $store_class ) = $self->db->meta->class_precedence_list;
+
+       my $prefix = quotemeta join "::", $store_class, 'Model', '';
+
+       $class =~ s/$prefix//;
+
+       return $class;
+    },
 );
 
 has title => (
