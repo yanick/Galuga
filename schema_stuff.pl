@@ -49,6 +49,7 @@ use Galuga::Store;
 use Galuga::Store::Model::Entry;
 
 my $store = Galuga::Store->connect( 'foo.db' );
+$store->register;
 
 $store->model('Entry')->index( 'category' );
 
@@ -61,8 +62,6 @@ my $entry = Galuga::Store::Model::Entry->new(
 $entry->store;
 
 # later on
-
-$DB::single = 1;
 
 my $e = $store->get( Entry => 'yadah' );
 
@@ -77,8 +76,9 @@ $e = $store->search( Entry => { category => 'x' } );
 
 say p( $e->all );
 
+say "bob";
 
-say $entry->meta->class_precedence_list;
+say "obo", $entry->meta->class_precedence_list;
 
 __END__
 

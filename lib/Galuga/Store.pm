@@ -21,9 +21,22 @@ around get => sub {
 
     return $hash unless ref $hash;
 
-    $hash->{store} = $self;
+    $hash->db($self);
 
+    return $hash;
+    $hash->{db} = $self;
+    use Data::Printer;
     return $hash->{'__CLASS__'}->unpack($hash);
+};
+
+sub register {
+    my $self = shift;
+    for my $p ( $self->plugins ) {
+        $self->model( $p->model )->_wrap( sub {
+            $p->unpack($_[0]);
+        });
+
+    }
 };
 
 

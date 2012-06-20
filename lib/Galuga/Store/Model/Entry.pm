@@ -6,7 +6,7 @@ use warnings;
 use Method::Signatures;
 
 use Moose;
-#use MooseX::ClassAttribute;
+use MooseX::ClassAttribute;
 use MooseX::Storage;
 
 with Storage;
@@ -16,24 +16,16 @@ has db => (
     is       => 'rw',
 );
 
-has model => (
+class_has model => (
     isa => 'Str',
     is => 'rw',
-    lazy => 1,
     default => method {
         # TODO probably over-complicated
-       my( $class ) = $self->meta->class_precedence_list;
+       my( $class ) = $self->class_precedence_list;
 
        $class =~ s/^.*?::Model:://;
 
        return $class;
-    },
-    trigger => sub {
-        my $self = shift;
-        die $self;
-        $self->db->model( $self->model )->_wrap( sub {
-            $self->unpack($_[0]);
-        });
     },
 );
 
