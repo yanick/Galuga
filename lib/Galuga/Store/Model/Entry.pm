@@ -7,25 +7,12 @@ use Method::Signatures;
 
 use Moose;
 use MooseX::ClassAttribute;
-use MooseX::Storage;
 
-with Storage;
+with 'DBIx::NoSQL::Store::Model::Role';
 
-has db => (
-    traits => [ 'DoNotSerialize' ],
-    is       => 'rw',
-);
-
-class_has model => (
-    isa => 'Str',
+has uri => (
+    traits => [ 'StoreIndex' ],
     is => 'rw',
-    default => method {
-        # TODO probably over-complicated
-       my( $class ) = $self->class_precedence_list;
-
-       $class =~ s/^.*?::Model:://;
-       return $class;
-    },
 );
 
 has title => (
@@ -36,15 +23,11 @@ has category => (
     is => 'rw',
 );
 
-method store {
-    $self->db->set( 
-        'Entry' => $self->title => $self,
-    );
-}
+has stuff => (
+    is => 'rw',
+);
 
-method _entity {
-   return $self->pack; 
-}
+
 
 
 __PACKAGE__->meta->make_immutable;
