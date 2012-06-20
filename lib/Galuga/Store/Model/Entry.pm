@@ -24,7 +24,6 @@ class_has model => (
        my( $class ) = $self->class_precedence_list;
 
        $class =~ s/^.*?::Model:://;
-
        return $class;
     },
 );
