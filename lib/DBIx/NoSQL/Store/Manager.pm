@@ -38,11 +38,15 @@ sub _model_name {
 
 method register {
     for my $p ( $self->all_model_classes ) {
-        $self->model( $p->store_model )->_wrap( sub {
+        my $model = $self->model( $p->store_model );
+        
+        $model->_wrap( sub {
             my $inflated = $p->unpack($_[0]);
             $inflated->store_db($self);
             return $inflated;
         });
+
+        $model->index(@$_) for $p->indexes;
     }
 };
 
