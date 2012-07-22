@@ -11,6 +11,14 @@ use DBIx::NoSQL::Store;
 use Method::Signatures;
 use Module::Pluggable require => 1;
 
+has model_path => (
+    is => 'ro',
+    isa => 'Str',
+    default => method {
+        join "::", ($self->meta->class_precedence_list)[0], 'Model';
+    },
+);
+
 has models => (
     traits => [ 'Hash' ],
     is => 'ro',
@@ -19,7 +27,7 @@ has models => (
     default => method {
         my ( $class ) = $self->meta->class_precedence_list;
 
-        search_path( $self, new => join '::', $class, 'Model' );
+        search_path( $self, new => $self->model_path );
 
         return { map { _model_name($_) => $_ } plugins( $self, plugins ) };
     },
@@ -32,12 +40,13 @@ has models => (
 
 sub _model_name {
     my $name = shift;
-    $name =~ s/^.*::Model:://;
+    $name =~ s/^.*:://;
     return $name;
 }
 
 method register {
     for my $p ( $self->all_model_classes ) {
+        warn "XXX", $p->store_model;
         my $model = $self->model( $p->store_model );
         
         $model->_wrap( sub {

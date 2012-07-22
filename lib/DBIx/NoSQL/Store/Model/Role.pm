@@ -25,7 +25,7 @@ class_has store_model => (
         # TODO probably over-complicated
        my( $class ) = $self->class_precedence_list;
 
-       $class =~ s/^.*?::Model:://;
+       $class =~ s/^.*:://;
        return $class;
     },
 );
