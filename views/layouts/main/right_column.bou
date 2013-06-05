@@ -1,0 +1,7 @@
+div { attr class => 'right_column';
+
+    show('ironman');
+
+    show('twitter');
+
+}

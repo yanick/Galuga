@@ -1,0 +1,23 @@
+use Template::Caribou::Tags::HTML ':all';
+use Template::Caribou::Tags::HTML::Extended ':all';
+
+has page_title => (
+    is => 'ro',
+    lazy => 1, 
+    default => 'Entries Index - Hacking Thy Fearful Symmetry',
+);
+
+has 'entries' => (
+    traits => [ 'Array' ],
+    is => 'ro',
+    isa => 'ArrayRef',
+    required => 1,
+    handles => {
+        all_entries => 'elements',
+    },
+);
+
+has twitter_account => (
+    is => 'ro',
+    isa => 'Str',
+);

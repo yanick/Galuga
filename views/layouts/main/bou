@@ -1,0 +1,16 @@
+use List::AllUtils qw/ first_value /;
+
+has store => (
+    is => 'ro',
+);
+
+has recent_entries => (
+    traits => [ qw/ Array / ],
+    isa => 'ArrayRef',
+    is  => 'ro',
+    default => sub { [] },
+    handles => {
+        all_recent_entries => 'elements',
+        nbr_recent_entries => 'count',
+    },
+);

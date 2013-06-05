@@ -1,0 +1,27 @@
+left_column {
+    widget {
+        h3 { 'Recent entries' };
+        ul {
+            for ( $self->all_recent_entries ) {
+                li {
+                    anchor '/entry/' . $_->uri => $_->title;
+                };
+            }
+        };
+
+        div {
+            attr style => 'text-align:right;margin: 0px';
+            anchor $self->uri_for( "/entries" ) => 'all entries';
+        };
+    };
+
+    widget { attr style => 'text-align:center';
+        anchor "http://github.com/yanick/galuga" => sub {
+            image '/images/galuga_button.png',
+                style => 'border: 0',
+                alt => "Powered by a Gamboling Beluga";
+
+        };
+    }
+};
+

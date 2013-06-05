@@ -1,0 +1,5 @@
+h1 { 'All Entries' };
+
+ul {
+    show( 'entry' => $_ ) for $self->all_entries; 
+}

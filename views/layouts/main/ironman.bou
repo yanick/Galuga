@@ -1,0 +1,12 @@
+div { 
+    attr class => 'widget ironman';
+
+    h3 { anchor "http://ironman.enlightenedperl.org/" => 'Perl Iron Man Challenge'; };
+
+    div { attr align => 'center';
+        img { 
+            attr alt => "Perl Iron Man Challenge badge" ,
+            src => "http://ironman.enlightenedperl.org/munger/mybadge/male/.png"; 
+        };
+    } 
+};

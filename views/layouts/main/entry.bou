@@ -1,0 +1,4 @@
+#( $entry ) 
+li {
+    anchor '/entry/' . $entry->uri => $entry->title;
+}

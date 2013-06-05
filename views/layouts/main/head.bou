@@ -1,0 +1,40 @@
+use Template::Caribou::Tags 
+    mytag => { -as => 'html_meta', name => 'meta' };
+
+head {
+
+html_meta { attr charset => 'UTF-8' };
+
+title { $self->page_title };
+
+print ::RAW <<'END';
+    <link rel="alternate" 
+          type="application/atom+xml" 
+          title="Recent Entries" 
+          href="/feed/atom" />
+
+    <link rel="alternate" 
+          type="application/rss+xml" 
+          title="Recent Entries" 
+          href="/feed/rss" />
+END
+
+favicon "/images/favicon.png";
+
+# TODO add rss feed
+
+css_include "/css/galuga.css";
+
+javascript_include $_
+for qw#
+    /javascripts/jquery.js
+#;
+
+css_include '/highlight/styles/github.css';
+
+javascript_include '/highlight/highlight.pack.js';
+#javascript_include 'http://yandex.st/highlightjs/7.3/highlight.min.js';
+
+javascript 'hljs.initHighlightingOnLoad();';
+
+};

@@ -1,0 +1,26 @@
+use utf8;
+
+div { 
+    attr class => "blog_entry"; 
+
+h1 { $self->entry->title };
+
+div { attr class => 'entry_times';
+    span { 
+        print "created: ", $self->entry->created->strftime("%B %e, %Y"); 
+    };
+    span { 
+        print ", last updated: ", $self->entry->last_updated->strftime("%B %e, %Y"); 
+    } if $self->entry->last_updated 
+        and $self->entry->last_updated->truncate( to => 'day' )
+                ->compare( $self->entry->created->truncate( to => 'day' ) );
+};
+
+my $body = $self->entry->html_body;
+print ":", utf8::is_utf8($body), ":";
+#utf8::decode($body);
+print ::RAW $body;
+
+#show('disqus');
+
+}

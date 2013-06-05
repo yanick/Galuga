@@ -1,0 +1,22 @@
+use utf8;
+
+use Template::Caribou::Tags::HTML ':all';
+use Template::Caribou::Tags::HTML::Extended ':all';
+
+has page_title => (
+    is => 'ro',
+    lazy => 1, 
+    default => sub { $_[0]->entry->title . ' - Hacking Thy Fearful Symmetry'
+    },
+);
+
+has 'entry' => (
+    is => 'ro',
+    isa => 'Galuga::Store::Model::Entry',
+    required => 1,
+);
+
+has twitter_account => (
+    is => 'ro',
+    isa => 'Str',
+);

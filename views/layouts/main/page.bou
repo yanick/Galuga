@@ -1,0 +1,39 @@
+use Template::Caribou::Tags qw/ attr /;
+use Template::Caribou::Tags::HTML::Extended qw/ :all /;
+use Template::Caribou::Tags::HTML qw/ :all /;
+
+use Template::Caribou::Tags 
+    mytag => { -as => 'header', class => 'header' },
+    mytag => { -as => 'inner_header', class => 'header-inner' },
+    mytag => { -as => 'tagline', class => 'tagline' },
+    mytag => { -as => 'main_body', class => 'main_body' },
+    mytag => { -as => 'left_column', class => 'left_column' },
+    mytag => { -as => 'widget', class => 'widget' },
+    mytag => { -as => 'middle_column', class => 'middle_column' },
+    mytag => { -as => 'blog_entry', class => 'blog_entry' },
+    mytag => { -as => 'noscript', name => 'noscript' },
+    ;
+
+doctype 'html 5';
+
+html {
+    show('head');
+    body {
+        header {
+            inner_header {
+                h1 { anchor "http://babyl.dyndns.org/techblog/" => 'Hacking Thy Fearful Symmetry' };
+                tagline { "Hacker, hacker coding bright." };
+            }
+        };
+
+        main_body {
+            show('left_column');
+            show('middle_column');
+            show('right_column');
+        };
+    };
+
+    div { attr class => 'footer', style => 'clear: both' };
+}
+
+

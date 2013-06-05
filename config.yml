@@ -1,0 +1,31 @@
+# This is the main configuration file of your Dancer app
+# env-related settings should go to environments/$env.yml
+# all the settings in this file will be loaded at Dancer's startup.
+
+# Generic Dancer stuff
+appname:  Galuga
+layout:   main
+charset:  UTF-8
+
+template: Caribou
+
+engines:
+    template:
+        Caribou:
+            namespace: Galuga::View
+
+plugins:
+    Feed:
+        title: Fearful Symmetry
+
+blog_repository: ./blog_entries
+store: ./db/entries.sqlite
+
+blog:
+    title: Hacking Thy Fearful Symmetry
+    tagline: Hacker, hacker coding bright
+    author: Yanick Champoux <yanick@babyl.ca>
+    language: en
+
+twitter_account: acp_nar
+disqus_id: hackingthyfearfulsymmetry

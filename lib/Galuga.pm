@@ -1,88 +1,98 @@
 package Galuga;
-use Moose;
-use namespace::autoclean;
 
-use Catalyst::Runtime 5.80;
+use utf8;
 
-# Set flags and add plugins for the application
-#
-#         -Debug: activates the debug mode for very useful log messages
-#   ConfigLoader: will load the configuration from a Config::General file in the
-#                 application's home directory
-# Static::Simple: will serve static files from the application's root
-#                 directory
+use Path::Tiny;
 
-use Catalyst qw/
-    ConfigLoader
-    Static::Simple
-    Cache 
-    Sitemap
-    VersionedURI
-    SubRequest
-    PageCache
-/;
-# PageCache
+use Dancer2 ':syntax';
 
-extends 'Catalyst';
+use Dancer2::Plugin::Feed;
 
-our $VERSION = '0.4.0';
-$VERSION = eval $VERSION;
+use Galuga::Store;
+use MIME::Types;
 
-# Configure the application.
-#
-# Note that settings in galuga.conf (or other external
-# configuration file that you set up manually) take precedence
-# over this when using ConfigLoader. Thus configuration
-# details given here can function as a default configuration,
-# with an external configuration file acting as an override for
-# local deployment.
+our $VERSION = '0.1';
 
-__PACKAGE__->config(
-    name => 'Galuga',
-    # Disable deprecated behavior needed by old applications
-    disable_component_resolution_regex_fallback => 1,
-    default_view => 'Mason',
-    static => {
-                   ignore_dirs => [ 'css' ],
-               },
-   'Plugin::Cache' => {
-       backend => {
-           class => 'Cache::FileCache',
-       } },
-   'Plugin::PageCache' => {
-       set_http_headers => 1,
-   },
+my $store = Galuga::Store->new(
+    blog_repository => config->{blog_repository},
+    db => config->{store},
 );
 
-# Start the application
-__PACKAGE__->setup();
+get '/feed/:format' => sub {
+
+    my @entries = map {{
+        title => $_->title,
+        content => $_->html_body,
+        issued => $_->created,
+        link => uri_for( '/entry/' . $_->uri ),
+    }} most_recent_entries();
+
+    create_feed(
+        link => uri_for('/'),
+        format => param('format'),
+        title => config->{blog}{title},
+        tagline => config->{blog}{tagline},
+        author => config->{blog}{author},
+        language => config->{blog}{language},
+        modified => $entries[0]->{issued},
+        entries => \@entries,
+    );
+};
+
+get '/entry/:entry' => sub {
+
+    my $entry = $store->get( 'Entry' => param('entry') ) 
+        or return pass;
+
+    response->is_encoded(1);
+
+    return template '/entry' => {
+        entry => $entry,
+        recent_entries => [ most_recent_entries() ],
+    };
+};
+
+get '/entry/*/files/**' => sub {
+    my( $entry, $path ) = splat;
+    
+    $entry = $store->get( 'Entry' => $entry ) 
+        or return pass;
+
+    my $mimetypes = MIME::Types->new;
+
+    send_file path(config->{blog_repository})->child($entry->path)->parent->child(
+        'files', @$path )->stringify, content_type => $mimetypes->mimeTypeOf( $path->[-1]
+        ), system_path => 1;
+};
+
+get '/' => sub {
+    my( $latest ) = most_recent_entries(1);
+
+    redirect '/entry/' . $latest->uri;
+};
+
+get '/entries' => sub {
+
+    template '/entries' => {
+        recent_entries => [ most_recent_entries() ],
+        entries         => [ $store->search('Entry')->order_by('created DESC')->all 
+        ],
+    };
+};
+
+sub most_recent_entries {
+    my $num = shift || 5;
+
+    my $s = $store->search('Entry')->order_by('created DESC');
+
+    my @entries;
+    while( my $e = $s->next ) {
+        push @entries, $e;
+        last unless $num--;
+    }
+
+    return @entries; 
+}
 
 
-=head1 NAME
-
-Galuga - Catalyst based application
-
-=head1 SYNOPSIS
-
-    script/galuga_server.pl
-
-=head1 DESCRIPTION
-
-[enter your description here]
-
-=head1 SEE ALSO
-
-L<Galuga::Controller::Root>, L<Catalyst>
-
-=head1 AUTHOR
-
-Yanick Champoux,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;
+true;
