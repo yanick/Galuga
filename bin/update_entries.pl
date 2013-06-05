@@ -9,15 +9,13 @@ use Getopt::Long;
 
 GetOptions(
     'force!' => \my $force,
+    'env=s' => \my $env,
 );
 
 use Galuga::Store;
 use Galuga::Config;
 
-chdir '/home/yanick/work/perl-modules/Galuga';
-
-my $config = Galuga::Config->new( config_location =>
-    '/home/yanick/work/perl-modules/Galuga' );
+my $config = Galuga::Config->new( config_location => '.', (environment => $env)x!!$env );
 
 my $store = Galuga::Store->new(
     blog_repository => $config->config->{blog_repository},
