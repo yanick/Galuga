@@ -25,6 +25,7 @@ get '/feed/:format' => sub {
         content => $_->html_body,
         issued => $_->created,
         link => uri_for( '/entry/' . $_->uri ),
+        base => uri_for('/'),	
     }} most_recent_entries();
 
     create_feed(
