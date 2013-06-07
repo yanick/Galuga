@@ -44,8 +44,6 @@ get '/entry/:entry' => sub {
     my $entry = $store->get( 'Entry' => param('entry') ) 
         or return pass;
 
-    response->is_encoded(1);
-
     return template '/entry' => {
         entry => $entry,
         recent_entries => [ most_recent_entries() ],
