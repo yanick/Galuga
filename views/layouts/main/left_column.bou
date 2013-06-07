@@ -1,3 +1,8 @@
+use Template::Caribou::Tags 
+    mytag => { -as => 'widget', class => 'widget' },
+    mytag => { -as => 'left_column', class => 'left_column' },
+    ;
+
 left_column {
     widget {
         h3 { 'Recent entries' };

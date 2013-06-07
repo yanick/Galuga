@@ -1,5 +1,6 @@
 use Template::Caribou::Tags 
     mytag => { -as => 'html_meta', name => 'meta' };
+use Template::Caribou::Tags::HTML ':all';
 
 head {
 

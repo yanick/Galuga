@@ -1,3 +1,7 @@
+use Template::Caribou::Tags::HTML::Extended ':all';
+use Template::Caribou::Tags::HTML ':all';
+use Template::Caribou::Tags 'attr';
+
 div { 
     attr class => 'widget ironman';
 

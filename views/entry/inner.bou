@@ -16,11 +16,8 @@ div { attr class => 'entry_times';
                 ->compare( $self->entry->created->truncate( to => 'day' ) );
 };
 
-my $body = $self->entry->html_body;
-print ":", utf8::is_utf8($body), ":";
-#utf8::decode($body);
-print ::RAW $body;
+print ::RAW $self->entry->html_body;
 
-#show('disqus');
+show('disqus');
 
 }
