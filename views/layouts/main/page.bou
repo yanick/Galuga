@@ -21,8 +21,8 @@ html {
     body {
         header {
             inner_header {
-                h1 { anchor "http://babyl.dyndns.org/techblog/" => 'Hacking Thy Fearful Symmetry' };
-                tagline { "Hacker, hacker coding bright." };
+                h1 { anchor $self->uri_for('/') => $self->context->app->config->{blog}{title}; };
+                tagline { $self->context->app->config->{blog}{tagline} };
             }
         };
 
