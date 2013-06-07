@@ -6,6 +6,7 @@ use strict;
 use warnings;
 
 use YAML;
+use JSON;
 
 use Moose;
 use DateTime::Format::Flexible;
@@ -204,6 +205,27 @@ sub process_markdown {
         if( $anchor =~ s#__ENTRY_DIR__# '/entry/'.$self->uri.'/files' #e ) {
             $_->attr('src'=>$anchor);
         }
+    });
+
+    # play-perl links
+    $doc->find('a')->each(sub{ 
+        my $href = $_->attr('href');
+
+        return unless $href =~ s#^play-perl:(.*)#http://questhub.io/perl/quest/$1#;
+        my $sha1 = $1;
+
+        $_->attr( href => $href );
+        $_->attr( class => $_->attr('class') . ' play_perl' );
+
+        use LWP::Simple;
+        use JSON;
+
+        my $quest = eval { JSON::decode_json LWP::Simple::get
+            "http://questhub.io/api/quest/$sha1" 
+        } or return;
+
+        $_->attr( title => $quest->{name} ) unless $_->attr('title');
+        $_->text( $quest->{name} ) unless $_->text;
     });
 
     my $body = join '', $doc->find('body')->html;
