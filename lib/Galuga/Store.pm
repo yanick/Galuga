@@ -64,8 +64,6 @@ sub update_entries {
 
     my $rs = $self->search('Entry');
 
-    $DB::single = 1;
-    
     while( my $entry = $rs->next ) {
         next unless not @dirs or $entry->path ~~ @dirs;
 
@@ -83,16 +81,9 @@ sub update_entries {
 
         $self->log( $entry->path. " new version" );
 
-        my $x = $self->create( 'Entry' => 
+        $self->create( 'Entry' => 
             path => $entry->path
-        );
-        
-        $DB::single = 1;
-        
-        warn join " : ", map { ord } split //, $x->html_body;
-        $x->store;
-        warn join " : ", map { ord } split //, $x->store_db->get('Entry' =>
-            'time-hopping')->html_body;
+        )->store;
 
         delete  $git_entries{$entry->path};
     }
