@@ -170,3 +170,8 @@ pre code {
     font-size: 0.9rem;
     overflow: auto;
 }
+
+a.play_perl:after {
+    content: url(/images/playperlplus1_24x13.png);
+    vertical-align: top;
+}

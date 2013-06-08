@@ -156,7 +156,7 @@ sub process_markdown {
     # ``` stuff
     $text =~ s@^ ```\s*(\S*?) $(.*?) ```$
               @'<pre><code>' . ( "#syntax: $1" x !! $1 ) . $2 . '</code></pre>'
-              @xmse;
+              @xmseg;
 
     my $doc = Web::Query->new( markdown( $text, { document_format => 'complete' } ) );
 
@@ -226,6 +226,17 @@ sub process_markdown {
 
         $_->attr( title => $quest->{name} ) unless $_->attr('title');
         $_->text( $quest->{name} ) unless $_->text;
+    });
+
+    # github links
+    $doc->find('a')->each(sub{ 
+        my $href = $_->attr('href');
+
+        return unless $href =~ s#^gh:##;
+        $href = "https://github.com/$href";
+
+        $_->attr( href => $href );
+        $_->attr( class => $_->attr('class') . ' github' );
     });
 
     my $body = join '', $doc->find('body')->html;
