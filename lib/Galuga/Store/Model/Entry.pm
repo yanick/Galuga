@@ -239,6 +239,31 @@ sub process_markdown {
         $_->attr( class => $_->attr('class') . ' github' );
     });
 
+    # blog
+    $doc->find('a')->each(sub{ 
+        my $href = $_->attr('href');
+
+        return unless $href =~ s#^blog:##;
+        $href = "/entry/$href";
+
+        $_->attr( href => $href );
+        $_->attr( class => $_->attr('class') . ' blog_entry' );
+    });
+
+    # cpan
+    $doc->find('a')->each(sub{ 
+        my $href = $_->attr('href');
+
+        return unless $href =~ s#^cpan:##;
+
+        $href = "module/$href" unless $href =~ m#/#;
+
+        $href = "https://metacpan.org/$href";
+
+        $_->attr( href => $href );
+        $_->attr( class => $_->attr('class') . ' cpan' );
+    });
+
     my $body = join '', $doc->find('body')->html;
 
     return $body;
